@@ -1,4 +1,6 @@
 from random import randint,choice,uniform
+import threading
+import time
 
 PolyCali = [
         [-76.5647898,3.3697588],
@@ -35,7 +37,7 @@ PolyCali = [
         [-76.5562501,3.3905466],
         [-76.5647898,3.3697588]
     ]
-genomeSize = 2
+genomeSize = 3
 
 
 def Seed():
@@ -100,13 +102,13 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
     for i in range(0, numSurvivors):
         for i in range(0,tournamentSize):
             competitors.append(choice(population))
-        for i in com:
-            biggestValue = 0
-            indvPosition = 0
-            if ( competitors[i][1] > biggestValue):
-                biggestValue = competitors[i][1]
-                indvPosition = i
-        survivors.append( competitors[indvPosition][0])
+        biggestValue = 0
+        indv = None
+        for i in competitors:            
+            if (i[genomeSize-1] > biggestValue):
+                biggestValue = i[genomeSize-1]
+                indv = i
+        survivors.append(indv[:genomeSize-1])
     return survivors
 
 def Fitness( indivdual ):
@@ -118,19 +120,46 @@ def FitnessEvaluate (poblation):
     return poblation
 
 
-def GeneticProcess( population, pMutacion, populationSize, tournamentSize, numSurvivos):
+def GeneticProcess( population, pMutation, populationSize, tournamentSize, numSurvivos):
+    FitnessEvaluate(population)
     parent = TournamentSelection( population, tournamentSize, numSurvivos )
     children = []
-    for i in range(0, int(populationSize/2) - 1):
-        Son, Daugther = CrossOVer(  parent.pop, parent.pop)
-        children.append(Mutation(Son, pMutacion))
-        children.append(Mutation(Daugther, pMutacion))
-    children = FitnessEvaluate(Poblation( populationSize, children))
-    return children
+    for i in range(0, int(len(parent)/2) - 1):
+        mother = parent.pop(0)
+        father = parent.pop(0)
+        Son, Daugther = CrossOVer( mother, father)
+        children.append(Mutation(Son, pMutation))
+        children.append(Mutation(Daugther, pMutation))
+    population = FitnessEvaluate(Poblation( populationSize, children))
+    
+
+
+
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos):
+    startTime = time.time()
+    populations = []
+    Solution = []
+    for i in range(0, numPopulation):
+        populations.append( FitnessEvaluate(Poblation(populationSize)))
+    threads = []
+    while( numGenerations > 0 ):
+        for i in range(0, numPopulation):
+                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos))
+                threads.append(threadPoblation)
+                threadPoblation.start()
+        for i in threads:
+            i.join()
+        numGenerations = numGenerations - 1
+    print("--- %s seconds ---" % (time.time() - startTime))
+    
+GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10)
+
+
    
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))
-print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
+#print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
 #print (Seed())
 #Mutation(1)
 
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
+
