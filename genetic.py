@@ -152,7 +152,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
         numGenerations = numGenerations - 1
     print("--- %s seconds ---" % (time.time() - startTime))
     
-GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10)
+#GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10)
 
 
    
