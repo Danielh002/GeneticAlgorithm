@@ -77,7 +77,6 @@ def InsideCity(y,x, poly = PolyCali):
         p1x,p1y = p2x,p2y
     return inside
 
-
 def CrossOVer( mother, father):
     position = (randint(1, genomeSize-1))
     firstMotherPart = mother[:position]
@@ -119,7 +118,6 @@ def FitnessEvaluate (poblation):
          individual.append(uniform(0, 100))
     return poblation
 
-
 def GeneticProcess( population, pMutation, populationSize, tournamentSize, numSurvivos):
     FitnessEvaluate(population)
     parent = TournamentSelection( population, tournamentSize, numSurvivos )
@@ -131,9 +129,6 @@ def GeneticProcess( population, pMutation, populationSize, tournamentSize, numSu
         children.append(Mutation(Son, pMutation))
         children.append(Mutation(Daugther, pMutation))
     population = FitnessEvaluate(Poblation( populationSize, children))
-    
-
-
 
 def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos):
     startTime = time.time()
@@ -153,13 +148,9 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
     print("--- %s seconds ---" % (time.time() - startTime))
     
 #GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10)
-
-
-   
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))
 #print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
 #print (Seed())
 #Mutation(1)
-
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 
