@@ -28,17 +28,18 @@ NO_HEALTH_CENTER_NEAR_POINTS =  50
 #   https://stackoverflow.com/questions/43700616/why-manhattan-distance-with-haversine-formula-for-geolocalizations-is-not-accura
 #   https://stackoverflow.com/questions/32923363/manhattan-distance-for-two-geolocations
 #   http://www.movable-type.co.uk/scripts/latlong.html
+#   https://www.latlong.net/lat-long-dms.html
 def ManhattanDistanceInMetricSystem( latitude1, longitude1, latitude2, longitude2):
-        deltaLatitude = math.fabs( latitude1 - latitude2)
-        deltaLongitude = math.fabs( longitude1 - longitude2)
-        a = math.pow(math.sin( deltaLatitude/2),2)
-        c = 2 * math.atan2( math.sqrt(a), math.sqrt(1-a))
-        latitudeDistance = EARTH_RADIO * c 
-        a = math.pow(math.sin( deltaLongitude/2),2)
-        c = 2 * math.atan2( math.sqrt(a), math.sqrt(1-a))
-        longitudeDistance = EARTH_RADIO * c
-        manhattanDistanceMetricSystem = math.fabs(latitudeDistance) + math.fabs(longitudeDistance)
-        return manhattanDistanceMetricSystem
+    deltaLatitude = math.fabs( latitude1 - latitude2)
+    deltaLongitude = math.fabs( longitude1 - longitude2)
+    a = math.pow(math.sin( deltaLatitude/2),2)
+    c = 2 * math.atan2( math.sqrt(a), math.sqrt(1-a))
+    latitudeDistance = EARTH_RADIO * c 
+    a = math.pow(math.sin( deltaLongitude/2),2)
+    c = 2 * math.atan2( math.sqrt(a), math.sqrt(1-a))
+    longitudeDistance = EARTH_RADIO * c
+    manhattanDistanceMetricSystem = math.fabs(latitudeDistance) + math.fabs(longitudeDistance)
+    return manhattanDistanceMetricSystem
     
 
 #print( ManhattanDistanceInMetricSystem(37.4602, 126.441, 37.5567, 126.924))
@@ -88,6 +89,7 @@ def fitnessHospitalsDistance( location ):
     if ( minManhattanDistance >= MAX_DISTANCE_STATION):
         points = NO_HEALTH_CENTER_NEAR_POINTS
     return points
+
 
 print( fitnessStationDistance([-71, 13]))
 

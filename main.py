@@ -21,7 +21,6 @@ def mapview():
         markers=[(37.4419, -122.1419)],
         style= "width: 100%; height: 100%"
     )
-
     return render_template('index.html', mymap=mymap)
 
 if __name__ == "__main__":
