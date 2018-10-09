@@ -130,7 +130,7 @@ def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamen
         children.append(Mutation(Daugther, pMutation))
     populationWithFitness = FitnessEvaluate(Poblation( populationSize, children))
 
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos):
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pSolution):
     startTime = time.time()
     populations = []
     solution = None
@@ -149,7 +149,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
     populationInOne = []
     for i in populations:
         populationInOne.extend(i)
-    solution = GetSolution( populationInOne, 100)
+    solution = GetSolution( populationInOne, pSolution)
     print("--- %s seconds ---" % (time.time() - startTime))
     print(solution)
     return solution
@@ -178,13 +178,14 @@ def CopyPorcentagePoblation( poblation, porcentage):
         i+=1
     return copyIndv
 
-def GetSolution( poblation, porcentage):
+def GetSolution( poblation, numSolutions):
     i = 0
-    numToAdd = math.ceil(len(poblation) * (porcentage/100))
     simpleFitnessList = GetOnlyFitnessList( poblation) 
     solution = []
-    while ( i < numToAdd):
-        inv = poblation[ simpleFitnessList.index(max(simpleFitnessList))]
+    while ( i < numSolutions):
+        inv = poblation[simpleFitnessList.index(max(simpleFitnessList))]
+        del poblation[simpleFitnessList.index(max(simpleFitnessList))]
+        del simpleFitnessList[simpleFitnessList.index(max(simpleFitnessList))]
         solution.append(inv)
         i+=1
     return solution
@@ -196,15 +197,14 @@ def Migration( poblations, porcentage ):
     RemovePorcentagePoblation( poblations[0], porcentage)
     poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
 
-#GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 100)
+print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #RemovePorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 1 )
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
-GeneticParallelAlgorithm(3, 3 , 1, 50, 50, 10)
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))
 #print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
 #print (Seed())
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
-
+#GeneticParallelAlgorithm(3, 3 , 1, 50, 50, 10)
