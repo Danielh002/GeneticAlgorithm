@@ -14,14 +14,23 @@ MAX_DISTANCE_STATION = 3
 #Gain points
 GOOD_DISTANCE_STATION = 20
 AVERAGE_DISTANCE_STATION = 0
-BAD_DISTANCE_STATION = -20
+BAD_DISTANCE_STATION = 20
 
 #FitnessValue for location vs Cali Clinics/Hospitals  in kilometers:
 #Distance Limits
-MIN_DISTANCE_HOSPITAL = 1
+MIN_DISTANCE_HOSPITAL = 5
 #Gain points
-HEALTH_CENTER_NEAR_POINTS = - 50
+HEALTH_CENTER_NEAR_POINTS =  50
 NO_HEALTH_CENTER_NEAR_POINTS =  50
+
+#FitnessValue for location vs FireFighters in kilometers:
+#Distance Limits
+MIN_DISTANCE_FIREFIGTHER = 3
+MAX_DISTANCE_FIREFIGTHER = 3
+#Gain points
+GOOD_DISTANCE_FIREFIGTHER = - 50
+AVERAGE_DISTANCE_FIREFIGTHER =  50
+BAD_DISTANCE_FIREFIGTHER = 20
 
 #Harvesine Formula 
 #Source:
@@ -59,15 +68,40 @@ def fitnessStationDistance( location ):
             print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
             break
         manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
-    if( manhattanDistance < minManhattanDistance):
+        if( manhattanDistance < minManhattanDistance):
+            minManhattanDistance = manhattanDistance
+    if( minManhattanDistance < MIN_DISTANCE_STATION ):
         points = GOOD_DISTANCE_STATION
     if( minManhattanDistance > MIN_DISTANCE_STATION and minManhattanDistance < MAX_DISTANCE_STATION):
         points = AVERAGE_DISTANCE_STATION
-    if ( minManhattanDistance > MAX_DISTANCE_STATION):
+    if( minManhattanDistance > MAX_DISTANCE_STATION):
         points = BAD_DISTANCE_STATION
     return points
 
 def fitnessHospitalsDistance( location ):  
+    loc = ("C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Hospitales.xlsx")
+    wb = xlrd.open_workbook(loc) 
+    sheet = wb.sheet_by_index(0) 
+    sheet.cell_value(0, 0)
+    manhattanDistance = 0.0
+    minManhattanDistance = math.inf
+    points = 0
+    for i in range(1,sheet.nrows): 
+        if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
+            print("A coordenate is str from: ", sheet.cell_value(i,0))
+            print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
+            print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
+            break
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
+        if (manhattanDistance < minManhattanDistance):
+            minManhattanDistance = manhattanDistance 
+    if( manhattanDistance < MIN_DISTANCE_HOSPITAL):
+        points = HEALTH_CENTER_NEAR_POINTS
+    if( minManhattanDistance >= MAX_DISTANCE_STATION):
+        points = NO_HEALTH_CENTER_NEAR_POINTS
+    return points
+
+def fitnessFirefigtherDistance( location ):  
     loc = ("C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Estaciones.xlsx")
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0) 
@@ -81,15 +115,21 @@ def fitnessHospitalsDistance( location ):
             print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
             print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
             break
-        manhattanDistance = math.sqrt(location[0]- sheet.cell_value(i, 1)) + math.sqrt(location[1]- sheet.cell_value(i, 2))
-        if (manhattanDistance < minManhattanDistance):
-            minManhattanDistance = manhattanDistance 
-    if( manhattanDistance < MIN_DISTANCE_HOSPITAL):
-        points = HEALTH_CENTER_NEAR_POINTS
-    if ( minManhattanDistance >= MAX_DISTANCE_STATION):
-        points = NO_HEALTH_CENTER_NEAR_POINTS
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
+        if( manhattanDistance < minManhattanDistance):
+            minManhattanDistance = manhattanDistance
+    if( minManhattanDistance < MIN_DISTANCE_FIREFIGTHER ):
+        points = GOOD_DISTANCE_STATION
+    if( minManhattanDistance > MIN_DISTANCE_FIREFIGTHER and minManhattanDistance < MAX_DISTANCE_FIREFIGTHER):
+        points = AVERAGE_DISTANCE_FIREFIGTHER
+    if( minManhattanDistance > MAX_DISTANCE_FIREFIGTHER):
+        points = BAD_DISTANCE_FIREFIGTHER
     return points
 
+def FitnessValue ( indivual):
+    return fitnessStationDistance(indivual) + fitnessHospitalsDistance(indivual) + fitnessFirefigtherDistance(indivual)
 
-print( fitnessStationDistance([-71, 13]))
+
+print( FitnessValue([-71, 13]))
+
 

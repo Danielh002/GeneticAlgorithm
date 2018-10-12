@@ -2,6 +2,7 @@ from random import randint,choice,uniform
 import threading
 import time
 import math
+import fitness
 
 PolyCali = [
         [-76.5647898,3.3697588],
@@ -39,7 +40,6 @@ PolyCali = [
         [-76.5647898,3.3697588]
     ]
 genomeSize = 2
-
 
 def Seed():
     while True:
@@ -111,12 +111,12 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
         survivors.append(indv[:genomeSize])
     return survivors
 
-def Fitness( indivdual ):
-    return individual.append(uniform(0, 100))
+def Fitness( individual ):
+    return individual.append( fitness.FitnessValue(individual))
 
 def FitnessEvaluate (poblation):
     for individual in poblation:
-         individual.append(uniform(0, 100))
+         individual.append(fitness.FitnessValue(individual))
     return poblation
 
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos):
@@ -130,7 +130,7 @@ def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamen
         children.append(Mutation(Daugther, pMutation))
     populationWithFitness = FitnessEvaluate(Poblation( populationSize, children))
 
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pSolution):
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, numSolutions):
     startTime = time.time()
     populations = []
     solution = None
@@ -149,7 +149,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
     populationInOne = []
     for i in populations:
         populationInOne.extend(i)
-    solution = GetSolution( populationInOne, pSolution)
+    solution = GetSolution( populationInOne, numSolutions)
     print("--- %s seconds ---" % (time.time() - startTime))
     print(solution)
     return solution
@@ -197,7 +197,7 @@ def Migration( poblations, porcentage ):
     RemovePorcentagePoblation( poblations[0], porcentage)
     poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
 
-print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
+#print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #RemovePorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 1 )
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
@@ -207,4 +207,4 @@ print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
-#GeneticParallelAlgorithm(3, 3 , 1, 50, 50, 10)
+GeneticParallelAlgorithm(3, 3 , 1, 50, 50, 10, 3)
