@@ -41,6 +41,31 @@ PolyCali = [
     ]
 genomeSize = 2
 
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, numSolutions):
+    startTime = time.time()
+    populations = []
+    solution = None
+    for i in range(0, numPopulation):
+        populations.append( FitnessEvaluate(Poblation(populationSize)))
+    threads = []
+    while( numGenerations > 0 ):
+        for i in range(0, numPopulation):
+                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos))
+                threads.append(threadPoblation)
+                threadPoblation.start()
+        for i in threads:
+            i.join()
+        #Migration( populations, 5)
+        numGenerations = numGenerations - 1
+        print( "Generacion numero restantes: ", numGenerations )
+    populationInOne = []
+    for i in populations:
+        populationInOne.extend(i)
+    solution = GetSolution( populationInOne, numSolutions)
+    print("--- %s seconds ---" % (time.time() - startTime))
+    #print(solution)
+    return solution
+
 def Seed():
     while True:
         coordX = uniform(3.2896921, 3.5033777)
@@ -102,7 +127,7 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
     for i in range(0, numSurvivors):
         for i in range(0,tournamentSize):
             competitors.append(choice(population))
-        biggestValue = 0
+        biggestValue = -math.inf
         indv = None
         for i in competitors:            
             if (i[genomeSize] > biggestValue):
@@ -111,12 +136,14 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
         survivors.append(indv[:genomeSize])
     return survivors
 
-def Fitness( individual ):
-    return individual.append( fitness.FitnessValue(individual))
-
 def FitnessEvaluate (poblation):
     for individual in poblation:
          individual.append(fitness.FitnessValue(individual))
+    return poblation
+
+def FitnessEvaluate (poblation):
+    for individual in poblation:
+         individual.append(randint(-100,100))
     return poblation
 
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos):
@@ -129,30 +156,6 @@ def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamen
         children.append(Mutation(Son, pMutation))
         children.append(Mutation(Daugther, pMutation))
     populationWithFitness = FitnessEvaluate(Poblation( populationSize, children))
-
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, numSolutions):
-    startTime = time.time()
-    populations = []
-    solution = None
-    for i in range(0, numPopulation):
-        populations.append( FitnessEvaluate(Poblation(populationSize)))
-    threads = []
-    while( numGenerations > 0 ):
-        for i in range(0, numPopulation):
-                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos))
-                threads.append(threadPoblation)
-                threadPoblation.start()
-        for i in threads:
-            i.join()
-        #Migration( populations, 5)
-        numGenerations = numGenerations - 1
-    populationInOne = []
-    for i in populations:
-        populationInOne.extend(i)
-    solution = GetSolution( populationInOne, numSolutions)
-    print("--- %s seconds ---" % (time.time() - startTime))
-    print(solution)
-    return solution
 
 def GetOnlyFitnessList( evaluatePoblation):
     simpleFitnessList = []
@@ -203,8 +206,9 @@ def Migration( poblations, porcentage ):
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))
 #print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
+#print (TournamentSelection( [[1,2,-5],[3,2,-3],[4,5,-1],[6,7,-2],[8,9,-4],[9,8,-3]], 2 , 2))
 #print (Seed())
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
-GeneticParallelAlgorithm(3, 3 , 1, 50, 50, 10, 3)
+GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10, 3)
