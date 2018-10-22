@@ -41,7 +41,7 @@ PolyCali = [
     ]
 genomeSize = 2
 
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, numSolutions):
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
     startTime = time.time()
     populations = []
     solution = None
@@ -55,7 +55,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
                 threadPoblation.start()
         for i in threads:
             i.join()
-        #Migration( populations, 5)
+        Migration( populations, pMigrationPoblation, pMigration)
         numGenerations = numGenerations - 1
         print( "Generacion numero restantes: ", numGenerations )
     populationInOne = []
@@ -65,6 +65,9 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
     print("--- %s seconds ---" % (time.time() - startTime))
     #print(solution)
     return solution
+
+#GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10, 5, 15, 3)
+
 
 def Seed():
     while True:
@@ -141,11 +144,6 @@ def FitnessEvaluate (poblation):
          individual.append(fitness.FitnessValue(individual))
     return poblation
 
-def FitnessEvaluate (poblation):
-    for individual in poblation:
-         individual.append(randint(-100,100))
-    return poblation
-
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos):
     parent = TournamentSelection( populationWithFitness, tournamentSize, numSurvivos )
     children = []
@@ -193,12 +191,14 @@ def GetSolution( poblation, numSolutions):
         i+=1
     return solution
 
-def Migration( poblations, porcentage ):
-    for i in range(0, len(poblations)-1):
-        RemovePorcentagePoblation( poblations[i+1], porcentage)
-        poblations[i+1].append( CopyPorcentagePoblation(poblations[i], porcentage))
-    RemovePorcentagePoblation( poblations[0], porcentage)
-    poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
+def Migration( poblations, porcentage, migrationProbability):
+    luck = randint(1,100)
+    if( luck <= migrationProbability):
+        for i in range(0, len(poblations)-1):
+            RemovePorcentagePoblation( poblations[i+1], porcentage)
+            poblations[i+1].append( CopyPorcentagePoblation(poblations[i], porcentage))
+        RemovePorcentagePoblation( poblations[0], porcentage)
+        poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
 
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
@@ -211,4 +211,3 @@ def Migration( poblations, porcentage ):
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
-GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10, 3)
