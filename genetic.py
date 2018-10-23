@@ -2,6 +2,7 @@ from random import randint,choice,uniform
 import threading
 import time
 import math
+import xlrd
 import fitness
 
 PolyCali = [
@@ -40,33 +41,6 @@ PolyCali = [
         [-76.5647898,3.3697588]
     ]
 genomeSize = 2
-
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
-    startTime = time.time()
-    populations = []
-    solution = None
-    for i in range(0, numPopulation):
-        populations.append( FitnessEvaluate(Poblation(populationSize)))
-    threads = []
-    while( numGenerations > 0 ):
-        for i in range(0, numPopulation):
-                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos))
-                threads.append(threadPoblation)
-                threadPoblation.start()
-        for i in threads:
-            i.join()
-        Migration( populations, pMigrationPoblation, pMigration)
-        numGenerations = numGenerations - 1
-        print( "Generacion numero restantes: ", numGenerations )
-    populationInOne = []
-    for i in populations:
-        populationInOne.extend(i)
-    solution = GetSolution( populationInOne, numSolutions)
-    print("--- %s seconds ---" % (time.time() - startTime))
-    #print(solution)
-    return solution
-
-#GeneticParallelAlgorithm(3, 1000 , 1, 50, 50, 10, 5, 15, 3)
 
 
 def Seed():
@@ -139,12 +113,37 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
         survivors.append(indv[:genomeSize])
     return survivors
 
-def FitnessEvaluate (poblation):
+def LoadAListWithData( fileLocation ):
+    wb = xlrd.open_workbook(fileLocation) 
+    sheet = wb.sheet_by_index(0) 
+    sheet.cell_value(0, 0)
+    listWithStationsData = []
+    for i in range(1,sheet.nrows):
+        station = []
+        if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
+            print("A coordenate is str from: ", sheet.cell_value(i,0))
+            print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
+            print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
+            break
+        else:
+            station.append(sheet.cell_value(i, 0))
+            station.append(sheet.cell_value(i, 1))
+            station.append(sheet.cell_value(i, 2))
+        listWithStationsData.append(station)
+    return listWithStationsData
+    
+def CreateDataList( fileLocationData ):
+    dataList = []
+    for i in fileLocationData:
+        dataList.append( LoadAListWithData(i))
+    return dataList
+        
+def FitnessEvaluate (poblation, dataList):
     for individual in poblation:
-         individual.append(fitness.FitnessValue(individual))
+         individual.append(fitness.FitnessValue(individual, dataList))
     return poblation
 
-def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos):
+def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos , dataList):
     parent = TournamentSelection( populationWithFitness, tournamentSize, numSurvivos )
     children = []
     for i in range(0, int(len(parent)/2)):
@@ -153,7 +152,7 @@ def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamen
         Son, Daugther = CrossOVer( mother, father)
         children.append(Mutation(Son, pMutation))
         children.append(Mutation(Daugther, pMutation))
-    populationWithFitness = FitnessEvaluate(Poblation( populationSize, children))
+    populationWithFitness = FitnessEvaluate(Poblation( populationSize, children), dataList)
 
 def GetOnlyFitnessList( evaluatePoblation):
     simpleFitnessList = []
@@ -167,6 +166,7 @@ def RemovePorcentagePoblation( poblation, porcentage):
     simpleFitnessList = GetOnlyFitnessList( poblation) 
     while ( i < numToRemove ):
         del poblation[ simpleFitnessList.index(min(simpleFitnessList))]
+        del simpleFitnessList[simpleFitnessList.index(min(simpleFitnessList))]
         i+=1
 
 def CopyPorcentagePoblation( poblation, porcentage):
@@ -200,9 +200,35 @@ def Migration( poblations, porcentage, migrationProbability):
         RemovePorcentagePoblation( poblations[0], porcentage)
         poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
 
+def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
+    startTime = time.time()
+    populations = []
+    solution = None
+    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+    for i in range(0, numPopulation):
+        populations.append( FitnessEvaluate(Poblation(populationSize), dataList))
+    threads = []
+    while( numGenerations > 0 ):
+        for i in range(0, numPopulation):
+                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos , dataList))
+                threads.append(threadPoblation)
+                threadPoblation.start()
+        for i in threads:
+            i.join()
+        Migration( populations, pMigrationPoblation, pMigration)
+        numGenerations = numGenerations - 1
+        print( "Generacion numero restantes: ", numGenerations )
+    populationInOne = []
+    for i in populations:
+        populationInOne.extend(i)
+    solution = GetSolution( populationInOne, numSolutions)
+    print("--- %s seconds ---" % (time.time() - startTime))
+    #print(solution)
+    return solution
+
+#GeneticParallelAlgorithm(3, 1000 , 1, 50, 10, 3, 5, 15 ,10)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
-#RemovePorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 1 )
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))
 #print (TournamentSelection( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3]], 2 , 2))
@@ -211,3 +237,4 @@ def Migration( poblations, porcentage, migrationProbability):
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
+#RemovePorcentagePoblation( [[1,2,-1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,-2],[9,5,11],[9,5,-10],[10,5,15]], 15 )

@@ -2,7 +2,17 @@
 # Program extracting first column 
 import xlrd
 import math
+import time
 
+FILE_LOCATIONS = [
+    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Estaciones.xlsx",
+     "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Hospitales.xlsx",  
+     "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Bomberos.xlsx",      
+]
+
+STATION_ROUTE_POSITION = 0
+HOSPITALS_ROUTE_POSITION = 1
+FIREFIGTHER_ROUTE_POSITION = 2
 
 #CONSTANTS
 #The Earth's radius, 6,371km
@@ -40,10 +50,6 @@ BAD_DISTANCE_FIREFIGTHER = -50
 #   http://www.movable-type.co.uk/scripts/latlong.html
 #   https://www.latlong.net/lat-long-dms.html
 
-#3.370720, -76.536617
-#3.367075, -76.528985
-#930.09 m (3.051,49 pies)
-
 
 #source = (45.070060, 7.663708)
 #target = (45.072800, 7.665540)
@@ -64,28 +70,14 @@ def ManhattanDistanceInMetricSystem( latitude1, longitude1, latitude2, longitude
     manhattanDistanceMetricSystem = math.fabs(latitudeDistance) + math.fabs(longitudeDistance)
     return manhattanDistanceMetricSystem
     
-
-
-def fitnessStationDistance( location ):  
-    loc = ("C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Estaciones.xlsx")
-    wb = xlrd.open_workbook(loc) 
-    sheet = wb.sheet_by_index(0) 
-    sheet.cell_value(0, 0)
+def fitnessStationDistanceV2( location, dataStations ):  
     manhattanDistance = 0.0
     minManhattanDistance = math.inf
     points = 0
-    for i in range(1,sheet.nrows): 
-        if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
-            #print("A coordenate is str from: ", sheet.cell_value(i,0))
-            #print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
-            #print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
-            break
-        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
-        
+    for i in dataStations:
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
         if( manhattanDistance < minManhattanDistance):
-            #print(sheet.cell_value(i, 0))
             minManhattanDistance = manhattanDistance
-            #print(minManhattanDistance)
     if( minManhattanDistance < MIN_DISTANCE_STATION ):
         points = GOOD_DISTANCE_STATION
     if( minManhattanDistance > MIN_DISTANCE_STATION and minManhattanDistance < MAX_DISTANCE_STATION):
@@ -94,44 +86,27 @@ def fitnessStationDistance( location ):
         points = BAD_DISTANCE_STATION
     return points
 
-def fitnessHospitalsDistance( location ):  
-    loc = ("C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Hospitales.xlsx")
-    wb = xlrd.open_workbook(loc) 
-    sheet = wb.sheet_by_index(0) 
-    sheet.cell_value(0, 0)
+
+def fitnessHospitalsDistance( location, dataHospitals):  
     manhattanDistance = 0.0
     minManhattanDistance = math.inf
     points = 0
-    for i in range(1,sheet.nrows): 
-        if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
-            #print("A coordenate is str from: ", sheet.cell_value(i,0))
-            #print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
-            #print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
-            break
-        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
-        if (manhattanDistance < minManhattanDistance):
-            minManhattanDistance = manhattanDistance 
+    for i in dataHospitals:
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
+        if( manhattanDistance < minManhattanDistance):
+            minManhattanDistance = manhattanDistance
     if( minManhattanDistance < MIN_DISTANCE_HOSPITAL):
         points = HEALTH_CENTER_NEAR_POINTS
     if( minManhattanDistance >= MAX_DISTANCE_STATION):
         points = NO_HEALTH_CENTER_NEAR_POINTS
     return points
 
-def fitnessFirefigtherDistance( location ):  
-    loc = ("C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Bomberos.xlsx")
-    wb = xlrd.open_workbook(loc) 
-    sheet = wb.sheet_by_index(0) 
-    sheet.cell_value(0, 0)
+def fitnessFirefigtherDistance( location, dataFireFigther):  
     manhattanDistance = 0.0
     minManhattanDistance = math.inf
     points = 0
-    for i in range(1,sheet.nrows): 
-        if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
-            #print("A coordenate is str from: ", sheet.cell_value(i,0))
-            #print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
-            #   print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
-            break
-        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], sheet.cell_value(i, 1), sheet.cell_value(i, 2)) 
+    for i in dataFireFigther:
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
         if( manhattanDistance < minManhattanDistance):
             minManhattanDistance = manhattanDistance
     if( minManhattanDistance < MIN_DISTANCE_FIREFIGTHER ):
@@ -142,15 +117,10 @@ def fitnessFirefigtherDistance( location ):
         points = BAD_DISTANCE_FIREFIGTHER
     return points
 
-def FitnessValue ( individual):
-    fitnessValueStation = fitnessStationDistance(individual)
-    fitnessValueHospital = fitnessHospitalsDistance(individual)
-    fitnessValueFireFighthers = fitnessFirefigtherDistance(individual)
+
+def FitnessValue ( individual, dataList ):
+    fitnessValueStation = fitnessStationDistanceV2(individual, dataList[STATION_ROUTE_POSITION])
+    fitnessValueHospital = fitnessHospitalsDistance(individual, dataList[HOSPITALS_ROUTE_POSITION])
+    fitnessValueFireFighthers = fitnessFirefigtherDistance(individual, dataList[FIREFIGTHER_ROUTE_POSITION])
     return fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers
-
-#print(fitnessStationDistance([-71,3.5]))
-#print( FitnessValue([-71, 13]))
-#print( ManhattanDistanceInMetricSystem( 45.070060,  7.663708, 45.072800, 7.665540))
-#print( ManhattanDistanceInMetricSystem( 3.471766,  -76.524704, 3.476348, -76.526826))
-
  
