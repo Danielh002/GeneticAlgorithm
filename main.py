@@ -23,6 +23,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 img = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
 
 
+
 # you can also pass the key here if you preferx
 GoogleMaps(app)
 
@@ -100,6 +101,5 @@ def processCSV():
     
 
 if __name__ == "__main__":
-
     app.run(debug=True, threaded=True)
 

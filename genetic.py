@@ -117,20 +117,18 @@ def LoadAListWithData( fileLocation ):
     wb = xlrd.open_workbook(fileLocation) 
     sheet = wb.sheet_by_index(0) 
     sheet.cell_value(0, 0)
-    listWithStationsData = []
+    listWithData = []
     for i in range(1,sheet.nrows):
-        station = []
+        singleRow = []
         if (type(sheet.cell_value(i, 1)) is str or type(sheet.cell_value(i, 2)) is str ):
             print("A coordenate is str from: ", sheet.cell_value(i,0))
             print(sheet.cell_value(i, 1),type(sheet.cell_value(i, 1)))
             print(sheet.cell_value(i, 2),type(sheet.cell_value(i, 2)))
             break
         else:
-            station.append(sheet.cell_value(i, 0))
-            station.append(sheet.cell_value(i, 1))
-            station.append(sheet.cell_value(i, 2))
-        listWithStationsData.append(station)
-    return listWithStationsData
+            singleRow = [sheet.cell_value(i, c) for c in range(sheet.ncols)]
+        listWithData.append(singleRow)
+    return listWithData
     
 def CreateDataList( fileLocationData ):
     dataList = []
@@ -139,8 +137,10 @@ def CreateDataList( fileLocationData ):
     return dataList
         
 def FitnessEvaluate (poblation, dataList):
+    startTime = time.time()
     for individual in poblation:
          individual.append(fitness.FitnessValue(individual, dataList))
+    print("--- %s seconds ---" % (time.time() - startTime))
     return poblation
 
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos , dataList):
@@ -200,7 +200,7 @@ def Migration( poblations, porcentage, migrationProbability):
         RemovePorcentagePoblation( poblations[0], porcentage)
         poblations[0].append( CopyPorcentagePoblation(poblations[-1], porcentage))
 
-def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGenerations, tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
+def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation , tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
     startTime = time.time()
     populations = []
     solution = None
@@ -226,7 +226,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize,  pMutation , numGen
     #print(solution)
     return solution
 
-#GeneticParallelAlgorithm(3, 1000 , 1, 50, 10, 3, 5, 15 ,10)
+GeneticParallelAlgorithm(3, 200 , 30, 1, 10, 3, 5, 15 ,10)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
