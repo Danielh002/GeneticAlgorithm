@@ -20,7 +20,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 #img = 'C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\hospitalIcon.png'
 #img = 'https://drive.google.com/open?id=1YnOYbe7XhjV61C5-vdK_vpXGqmYG3Xra'
-img = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
+#img = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
 
 
 
@@ -48,7 +48,7 @@ def mapview():
         identifier="view-side",
         lat=3.431355,
         lng=-76.529650,
-        markers=[(loc[1], loc[0], None, img ) for loc in locations],
+        markers=[(loc[1], loc[0], None, None ) for loc in locations],
         style= "width: 100%; height: 100%"
     )
     session['result'] = json.dumps(locations)
