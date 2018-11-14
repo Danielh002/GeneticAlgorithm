@@ -227,7 +227,7 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
     #print(solution)
     return solution
 
-GeneticParallelAlgorithm(3, 200 , 30, 1, 10, 3, 5, 15 ,10)
+#GeneticParallelAlgorithm(3, 200 , 30, 1, 10, 3, 5, 15 ,10)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
