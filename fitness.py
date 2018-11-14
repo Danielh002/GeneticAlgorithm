@@ -9,11 +9,11 @@ import time
 EARTH_RADIO = 6371
 
 FILE_LOCATIONS = [
-    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Estaciones.xlsx",
-    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Hospitales.xlsx",  
-    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\Bomberos.xlsx", 
-    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\PuntosDeSonidoSemanaDiaCali.xlsx",
-    "C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\PuntosDeSonidoFinSemanaNocheCali.xlsx",     
+    ".\\Datos\\Estaciones.xlsx",
+    ".\\Datos\\Hospitales.xlsx",  
+    ".\\Datos\\Bomberos.xlsx", 
+    ".\\Datos\\PuntosDeSonidoSemanaDiaCali.xlsx",
+    ".\\Datos\\PuntosDeSonidoFinSemanaNocheCali.xlsx",     
 ]
 
 STATION_ROUTE_POSITION = 0
