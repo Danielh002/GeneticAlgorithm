@@ -3,17 +3,26 @@
 import xlrd
 import math
 import time
+import os
 
 #CONSTANTS
 #The Earth's radius, 6,371km
 EARTH_RADIO = 6371
 
+pathfile = os.getcwd()
+statiosRoute = os.path.join(pathfile,"Datos","Estaciones.xlsx")
+hospitalRoute = os.path.join(pathfile,"Datos","Hospitales.xlsx")
+fireFightersRoute = os.path.join(pathfile,"Datos","Bomberos.xlsx")
+dailySoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoSemanaDiaCali.xlsx")
+nightSoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoFinSemanaNocheCali.xlsx")
+
+
 FILE_LOCATIONS = [
-    ".\\Datos\\Estaciones.xlsx",
-    ".\\Datos\\Hospitales.xlsx",  
-    ".\\Datos\\Bomberos.xlsx", 
-    ".\\Datos\\PuntosDeSonidoSemanaDiaCali.xlsx",
-    ".\\Datos\\PuntosDeSonidoFinSemanaNocheCali.xlsx",     
+    statiosRoute,
+    hospitalRoute,  
+    fireFightersRoute, 
+    dailySoundRoute,
+    nightSoundRoute,     
 ]
 
 STATION_ROUTE_POSITION = 0

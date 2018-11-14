@@ -4,6 +4,7 @@ import time
 import math
 import xlrd
 import fitness
+import os
 
 PolyCali = [
         [-76.5647898,3.3697588],
