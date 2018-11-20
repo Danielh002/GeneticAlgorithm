@@ -238,4 +238,4 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
 #Mutation(1)
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
-#RemovePorcentagePoblation( [[1,2,-1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,-2],[9,5,11],[9,5,-10],[10,5,15]], 15 )
+#RemovePorcentagePoblation( [[1,2,-1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,-2],[9,5,11],[9,5,-10],[10,5,15]], 15 )git 
