@@ -49,15 +49,16 @@ def mapview():
     pMigration = int(request.args.get('pMigration'))
     numSolutions = int(request.args.get('numSolutions'))
     #locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
-    #task = genetic_task.delay( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
-    task = add.delay(5,5)
-    return str(task.id)
-    #return jsonify({}), 202, {'Location': url_for('taskstatus', task_id=task.id)}
-
+    
+    task = genetic_task.delay( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
+    #task = add.delay(5,5)
+    #return str(task.id)
+    return jsonify({}), 202, {'Location': url_for('taskstatus', task_id=task.id)}
 
 @appi.route("/loading/<task_id>",  methods=['GET', 'POST'])
-def taskstatus():
-    task = genetic_task.AsyncResult(task_id)
+def taskstatus(task_id):
+    task = add.AsyncResult(task_id)
+    print(task)
     if task.state == 'PENDING':
         # job did not start yet
         response = {
@@ -127,7 +128,7 @@ def processCSV():
 @celery.task
 def add(x, y):
     return x + y
-"""
+
 @celery.task(bind=True)
 def genetic_task( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions):
     result = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
@@ -144,7 +145,7 @@ def genetic_task( numPopulation, populationSize, pMutation, numGenerations, tour
     return {'current': 100, 'total': 100, 'status': 'Task completed!',
             'result': 42}
 
-"""            
+            
 if __name__ == "__main__":
     appi.run(debug=True, threaded=True)
 
