@@ -43,7 +43,7 @@ def mapview():
     pMigrationPoblation = int(request.args.get('pMigrationPoblation'))
     pMigration = int(request.args.get('pMigration'))
     numSolutions = int(request.args.get('numSolutions'))
-    locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, pMutation, numGenerations, tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
+    locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation,  tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
     mymap = Map(
         identifier="view-side",
         lat=3.431355,
@@ -92,13 +92,6 @@ def processCSV():
     session['result'] = json.dumps(locations)
     return render_template('templates/map.html', mymap=mymap)
 
-    """
-    for row in csv_input:
-        print(row) 
-    stream.seek(0)
-    return ('', 204)
-    """
-    
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)
