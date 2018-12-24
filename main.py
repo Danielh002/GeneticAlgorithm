@@ -20,9 +20,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 #img = 'C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\hospitalIcon.png'
 #img = 'https://drive.google.com/open?id=1YnOYbe7XhjV61C5-vdK_vpXGqmYG3Xra'
-#img = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
-
-
+hospitalicon = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
+stationIcon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
+fireFigtherIcon = 'http://maps.google.com/mapfiles/ms/micons/firedept.png'
 
 # you can also pass the key here if you preferx
 GoogleMaps(app)
@@ -43,12 +43,18 @@ def mapview():
     pMigrationPoblation = int(request.args.get('pMigrationPoblation'))
     pMigration = int(request.args.get('pMigration'))
     numSolutions = int(request.args.get('numSolutions'))
+
+    specialMarkers = specialMarkersTuples()
     locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation,  tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
+    for i in locations:
+        i.insert(2,None)
+    print(locations)
+    locations.extend(specialMarkers)
     mymap = Map(
         identifier="view-side",
         lat=3.431355,
         lng=-76.529650,
-        markers=[(loc[1], loc[0], None, None ) for loc in locations],
+        markers=[(loc[1], loc[0], None, loc[2] ) for loc in locations],
         style= "width: 100%; height: 100%"
     )
     session['result'] = json.dumps(locations)
@@ -86,12 +92,28 @@ def processCSV():
         identifier="view-side",
         lat=3.431355,
         lng=-76.529650,
-        markers=[(loc[1], loc[0], None, img ) for loc in locations],
+        markers=[(loc[1], loc[0], None, None ) for loc in locations],
         style= "width: 100%; height: 100%"
     )
     session['result'] = json.dumps(locations)
     return render_template('templates/map.html', mymap=mymap)
 
+def specialMarkersTuples():
+    stations = genetic.LoadAListWithData( genetic.fitness.statiosRoute)
+    hospital = genetic.LoadAListWithData( genetic.fitness.hospitalRoute)
+    fireFigther = genetic.LoadAListWithData( genetic.fitness.fireFightersRoute)
+    for i in stations:
+        i.pop(0)
+        i.append(stationIcon)
+    for i in hospital:
+        i.pop(0)
+        i.append(hospitalicon)
+    for i in fireFigther:
+        i.pop(0)
+        i.append(fireFigtherIcon)
+    stations.extend(hospital)
+    stations.extend(fireFigther)
+    return stations
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

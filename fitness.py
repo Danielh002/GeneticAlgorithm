@@ -13,33 +13,38 @@ pathfile = os.getcwd()
 statiosRoute = os.path.join(pathfile,"Datos","Estaciones.xlsx")
 hospitalRoute = os.path.join(pathfile,"Datos","Hospitales.xlsx")
 fireFightersRoute = os.path.join(pathfile,"Datos","Bomberos.xlsx")
-dailySoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoSemanaDiaCali.xlsx")
-nightSoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoFinSemanaNocheCali.xlsx")
+carAccidentsRoute = os.path.join(pathfile,"Datos","AccidentesTransitoCali.xlsx")
+#dailySoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoSemanaDiaCali.xlsx")
+#nightSoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoFinSemanaNocheCali.xlsx")
 
 
 FILE_LOCATIONS = [
     statiosRoute,
     hospitalRoute,  
-    fireFightersRoute, 
-    dailySoundRoute,
-    nightSoundRoute,     
+    fireFightersRoute,
+    carAccidentsRoute,
+    #dailySoundRoute,
+    #nightSoundRoute,     
 ]
 
 STATION_ROUTE_POSITION = 0
 HOSPITALS_ROUTE_POSITION = 1
 FIREFIGTHER_ROUTE_POSITION = 2
-CALI_DAILY_SOUND_ROUTE_POSITION = 3
-CALI_NIGHT_SOUND_ROUTE_POSITION = 4
-
-
-
+CAR_ACCIDENT_ROUTE_POSITION = 3
+#CALI_DAILY_SOUND_ROUTE_POSITION = 3
+#CALI_NIGHT_SOUND_ROUTE_POSITION = 4
 #FitnessValue for location vs Cali Clinics/Hospitals  in kilometers:
 #Distance Limits
 MIN_DISTANCE_HOSPITAL = 5
 #Gain points
-HEALTH_CENTER_NEAR_POINTS =  - 40
-NO_HEALTH_CENTER_NEAR_POINTS =  40
+HEALTH_CENTER_NEAR_POINTS =  - 30
+NO_HEALTH_CENTER_NEAR_POINTS =  30
 ###############################################################################
+
+#FitnessValue for urgencies  in kilometers:
+MAX_POINTS_URGENCIES = 40
+
+
 #FitnessValue Sound
 #Sound Distance
 SOUND_DISTANCE = 1
@@ -172,15 +177,25 @@ def fitnessSoundCali( location, dataSoundInDay):
         points = HIGHT_DB_POINTS
     return points
 
+def fitnessCarAccidentCali( location, dataCarAccident):
+    sumAccidents = 0
+    points = 0
+    total = 2278
+    for i in dataCarAccident:
+        if( i[3] >= haversineDistance( location[0], location[1], i[1], i[2])):
+            sumAccidents = sumAccidents + i[4]
+    points = (sumAccidents*MAX_POINTS_URGENCIES)/total
+    return points
 
 
 def FitnessValue ( individual, dataList ):
     fitnessValueStation = fitnessStationDistanceV2(individual, dataList[STATION_ROUTE_POSITION])
     fitnessValueHospital = fitnessHospitalsDistance(individual, dataList[HOSPITALS_ROUTE_POSITION])
     fitnessValueFireFighthers = fitnessFirefigtherDistance(individual, dataList[FIREFIGTHER_ROUTE_POSITION])
-    fitnessValueSoundCaliDaily = fitnessSoundCali( individual, dataList[CALI_DAILY_SOUND_ROUTE_POSITION])
-    fitnessValueSonudCaliNight = fitnessSoundCali( individual, dataList[CALI_NIGHT_SOUND_ROUTE_POSITION])/2
-    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueSoundCaliDaily + fitnessValueSonudCaliNight
+    fitnessValueCarAccidentCali = fitnessCarAccidentCali(individual, dataList[CAR_ACCIDENT_ROUTE_POSITION])
+    #$fitnessValueSoundCaliDaily = fitnessSoundCali( individual, dataList[CALI_DAILY_SOUND_ROUTE_POSITION])
+    #fitnessValueSonudCaliNight = fitnessSoundCali( individual, dataList[CALI_NIGHT_SOUND_ROUTE_POSITION])/2
+    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali #fitnessValueSoundCaliDaily + fitnessValueSonudCaliNight
     if( sumPoints < 0):
         sumPoints = 0
     elif( sumPoints > 100):
