@@ -45,13 +45,13 @@
   <h2> Parametros: </h2>
   <form class="form-horizontal" action="/map">
     <div class="form-group">
-    <label class="control-label col-sm-2" for="numPopulation">Numero de poblaciones:</label>
+    <label class="control-label col-sm-2" for="numPopulation">Número de islas:</label>
     <div class="col-sm-10">
       <input type="number" class="form-control" id="numPopulation" placeholder="Ingrese el numero de poblaciones" name="numPopulation">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-sm-2" for="populationSize">Tamaño de las poblaciones:</label>
+    <label class="control-label col-sm-2" for="populationSize"> Cantidad de individuos por islas:</label>
     <div class="col-sm-10">          
       <input type="number" class="form-control" id="populationSize" placeholder="Ingrese el tamaño para cada poblacion" name="populationSize">
     </div>
@@ -65,37 +65,37 @@
   </div>
 
   <div class="form-group">
-      <label class="control-label col-sm-2" for="tournamentSize"> Tamaño del torneo </label>
+      <label class="control-label col-sm-2" for="tournamentSize"> Tamaño del torneo: </label>
       <div class="col-sm-10">          
         <input type="number" class="form-control" id="tournamentSize" placeholder="Ingrese el tamaño del torneo" name="tournamentSize">
       </div>
   </div>
 
   <div class="form-group">
-      <label class="control-label col-sm-2" for="numSurvivors"> Sobrevivientes del torneo </label>
+      <label class="control-label col-sm-2" for="numSurvivors"> Numero de sobrevivientes del torneo: </label>
       <div class="col-sm-10">          
         <input type="number" class="form-control" id="numSurvivors" placeholder="Ingrese la cantidad de supervivientes para el torneo" name="numSurvivors">
       </div>
   </div>
 
   <div class="form-group">
-      <label class="control-label col-sm-2" for="pMutation"> Probabilidad de mutacion </label>
+      <label class="control-label col-sm-2" for="pMutation"> Probabilidad de mutacion: </label>
       <div class="col-sm-10">          
-        <input type="number" class="form-control" id="pMutation" placeholder="Ingrese la probabiblidad de mutacion" name="pMutation">
+        <input type="number" class="form-control" id="pMutation" placeholder="Ingrese la probabiblidad de mutacion" name="pMutation" min="0" max="1" step="0.01" value="0.01">
       </div>
   </div>
 
   <div class="form-group">
-      <label class="control-label col-sm-2" for="pMigration"> Probabilidad de migracion </label>
+      <label class="control-label col-sm-2" for="pMigration"> Probabilidad de migracion: </label>
       <div class="col-sm-10">          
-        <input type="number" class="form-control" id="pMigration" placeholder="Ingrese la probabilidad de migracion" name="pMigration">
+        <input type="number" class="form-control" id="pMigration" placeholder="Ingrese la probabilidad de migracion" name="pMigration" min="0" max="1" step="0.01" value="0.15">
       </div>
   </div>
 
   <div class="form-group">
-    <label class="control-label col-sm-2" for="pMigrationPoblation"> Porcentage de Poblacion migrable </label>
+    <label class="control-label col-sm-2" for="pMigrationPoblation"> Porcentage de poblacion  que puede migrar: </label>
     <div class="col-sm-10">          
-      <input type="number" class="form-control" id="pMigrationPoblation" placeholder="Ingrese el porcentage de la poblacion migrable" name="pMigrationPoblation">
+      <input type="number" class="form-control" id="pMigrationPoblation" placeholder="Ingrese el porcentage de la poblacion migrable" name="pMigrationPoblation" min="0" max="100" step="1" value="5">
     </div>
 </div>
 

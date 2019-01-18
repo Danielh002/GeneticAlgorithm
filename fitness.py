@@ -14,8 +14,8 @@ statiosRoute = os.path.join(pathfile,"Datos","Estaciones.xlsx")
 hospitalRoute = os.path.join(pathfile,"Datos","Hospitales.xlsx")
 fireFightersRoute = os.path.join(pathfile,"Datos","Bomberos.xlsx")
 carAccidentsRoute = os.path.join(pathfile,"Datos","AccidentesTransitoCali.xlsx")
-#dailySoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoSemanaDiaCali.xlsx")
-#nightSoundRoute = os.path.join(pathfile,"Datos","PuntosDeSonidoFinSemanaNocheCali.xlsx")
+personalInjuriesRoute = os.path.join(pathfile,"Datos","AccidentesTransitoCali.xlsx")
+
 
 
 FILE_LOCATIONS = [
@@ -23,48 +23,34 @@ FILE_LOCATIONS = [
     hospitalRoute,  
     fireFightersRoute,
     carAccidentsRoute,
-    #dailySoundRoute,
-    #nightSoundRoute,     
+    personalInjuriesRoute,
 ]
 
 STATION_ROUTE_POSITION = 0
 HOSPITALS_ROUTE_POSITION = 1
 FIREFIGTHER_ROUTE_POSITION = 2
 CAR_ACCIDENT_ROUTE_POSITION = 3
-#CALI_DAILY_SOUND_ROUTE_POSITION = 3
-#CALI_NIGHT_SOUND_ROUTE_POSITION = 4
+PERSONAL_INJURIES_ROUTE = 4
+
+###############################################################################
+#FitnessValue for urgencies  in kilometers:
+MAX_POINTS_CAR_ACCIDENTS = 25
+MAX_POINTS_PERSONAL_INJURIES = 25
 #FitnessValue for location vs Cali Clinics/Hospitals  in kilometers:
 #Distance Limits
 MIN_DISTANCE_HOSPITAL = 5
 #Gain points
-HEALTH_CENTER_NEAR_POINTS =  - 30
-NO_HEALTH_CENTER_NEAR_POINTS =  30
-###############################################################################
-
-#FitnessValue for urgencies  in kilometers:
-MAX_POINTS_URGENCIES = 40
-
-
-#FitnessValue Sound
-#Sound Distance
-SOUND_DISTANCE = 1
-#DB SCALES
-LOW_DB_LEVEL = 60
-MID_DB_LEVEL = 80
-HIGHT_DB_LEVEL = 90
-#DB SCALES POINTS
-LOW_DB_POINTS = 20
-MID_DB_POINTS = 0
-HIGHT_DB_POINTS = -20
+HEALTH_CENTER_NEAR_POINTS =  - 25
+NO_HEALTH_CENTER_NEAR_POINTS =  25
 ###############################################################################
 #FitnessValue for location vs Stations MIO in kilometers:
 #Distance Limits
 MIN_DISTANCE_STATION = 7
 MAX_DISTANCE_STATION = 3
 #Gain points
-GOOD_DISTANCE_STATION = 20
+GOOD_DISTANCE_STATION = 15
 AVERAGE_DISTANCE_STATION = 0
-BAD_DISTANCE_STATION = -20
+BAD_DISTANCE_STATION = -15
 ###############################################################################
 #FitnessValue for location vs FireFighters in kilometers:
 #Distance Limits
@@ -77,17 +63,15 @@ BAD_DISTANCE_FIREFIGTHER = -10
 
 
 
+
 #Harvesine Formula 
 #Source:
 #   https://stackoverflow.com/questions/43700616/why-manhattan-distance-with-haversine-formula-for-geolocalizations-is-not-accura
 #   https://stackoverflow.com/questions/32923363/manhattan-distance-for-two-geolocations
 #   http://www.movable-type.co.uk/scripts/latlong.html
 #   https://www.latlong.net/lat-long-dms.html
-
-
 #source = (45.070060, 7.663708)
 #target = (45.072800, 7.665540)
-
 #MI CASA : 3.471766, -76.524704
 #Chipi 3.476348, -76.526826
 
@@ -159,24 +143,6 @@ def fitnessFirefigtherDistance( location, dataFireFigther):
         points = BAD_DISTANCE_FIREFIGTHER
     return points
 
-def fitnessSoundCali( location, dataSoundInDay):
-    dbSum = 0
-    points = 0
-    for i in dataSoundInDay:
-        if( SOUND_DISTANCE >= haversineDistance( location[0], location[1], i[1], i[2])):
-            dbSum = dbSum + math.pow(10,i[3]/10)
-    if(dbSum == 0):
-        dbSum = 55
-    else:
-        dbSum = 10*math.log10(dbSum)
-    if (dbSum <= LOW_DB_LEVEL):
-        points = LOW_DB_POINTS
-    elif( dbSum > LOW_DB_LEVEL and dbSum < MID_DB_LEVEL):
-        points = MID_DB_POINTS
-    else:
-        points = HIGHT_DB_POINTS
-    return points
-
 def fitnessCarAccidentCali( location, dataCarAccident):
     sumAccidents = 0
     points = 0
@@ -184,7 +150,17 @@ def fitnessCarAccidentCali( location, dataCarAccident):
     for i in dataCarAccident:
         if( i[3] >= haversineDistance( location[0], location[1], i[1], i[2])):
             sumAccidents = sumAccidents + i[4]
-    points = (sumAccidents*MAX_POINTS_URGENCIES)/total
+    points = (sumAccidents*MAX_POINTS_CAR_ACCIDENTS)/total
+    return points
+
+def fitnessPersonalInjueriesCali( location, dataPersonalInjueries):
+    sumAccidents = 0
+    points = 0
+    total = 6955
+    for i in dataPersonalInjueries:
+        if( i[3] >= haversineDistance( location[0], location[1], i[1], i[2])):
+            sumAccidents = sumAccidents + i[4]
+    points = (sumAccidents*MAX_POINTS_PERSONAL_INJURIES)/total
     return points
 
 
@@ -193,9 +169,8 @@ def FitnessValue ( individual, dataList ):
     fitnessValueHospital = fitnessHospitalsDistance(individual, dataList[HOSPITALS_ROUTE_POSITION])
     fitnessValueFireFighthers = fitnessFirefigtherDistance(individual, dataList[FIREFIGTHER_ROUTE_POSITION])
     fitnessValueCarAccidentCali = fitnessCarAccidentCali(individual, dataList[CAR_ACCIDENT_ROUTE_POSITION])
-    #$fitnessValueSoundCaliDaily = fitnessSoundCali( individual, dataList[CALI_DAILY_SOUND_ROUTE_POSITION])
-    #fitnessValueSonudCaliNight = fitnessSoundCali( individual, dataList[CALI_NIGHT_SOUND_ROUTE_POSITION])/2
-    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali #fitnessValueSoundCaliDaily + fitnessValueSonudCaliNight
+    fitnessPersonalInjueriesCali = fitnessCarAccidentCali(individual, dataList[PERSONAL_INJURIES_ROUTE])
+    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali + fitnessPersonalInjueriesCali #fitnessValueSoundCaliDaily + fitnessValueSonudCaliNight
     if( sumPoints < 0):
         sumPoints = 0
     elif( sumPoints > 100):

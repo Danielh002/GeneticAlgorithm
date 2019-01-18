@@ -36,14 +36,13 @@ def index():
 def mapview():
     numPopulation =  int(request.args.get('numPopulation'))
     populationSize = int(request.args.get('populationSize'))
-    pMutation = int(request.args.get('pMutation'))
+    pMutation = float(request.args.get('pMutation'))*100
     numGenerations = int(request.args.get('numGenerations'))
     tournamentSize = int(request.args.get('tournamentSize'))
     numSurvivors = int(request.args.get('numSurvivors'))
     pMigrationPoblation = int(request.args.get('pMigrationPoblation'))
-    pMigration = int(request.args.get('pMigration'))
+    pMigration = float(request.args.get('pMigration'))*100
     numSolutions = int(request.args.get('numSolutions'))
-
     specialMarkers = specialMarkersTuples()
     locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation,  tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
     for i in locations:
