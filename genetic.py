@@ -4,6 +4,7 @@ import time
 import math
 import xlrd
 import fitness
+import statistics
 import os
 
 PolyCali = [
@@ -48,8 +49,8 @@ def Seed():
     while True:
         coordX = uniform(3.2896921, 3.5033777)
         coordY = uniform(-76.592577, -76.451471)
-        if( InsideCity( coordX, coordY)):
-            return [coordY, coordX]
+        #if( InsideCity( coordX, coordY)):
+        return [coordY, coordX]
 
 def Poblation( sizePoblation , basePopulation = None ):
     poblation = []
@@ -180,8 +181,6 @@ def CopyPorcentagePoblation( poblation, porcentage):
         i+=1
     return copyIndv
 
-
-
 def GetSolution( poblation, numSolutions):
     i = 0
     simpleFitnessList = GetOnlyFitnessList( poblation) 
@@ -193,6 +192,26 @@ def GetSolution( poblation, numSolutions):
         solution.append(inv)
         i+=1
     return solution
+
+def Stadistics( poblations):
+    mode = 0
+    modes = []
+    pairMode = []
+    media = []
+    median = []
+    fitnessList = []
+    for i in poblations:
+        fitnessList.append(GetOnlyFitnessList(i))
+    for i in fitnessList:
+        mode = max(set(i), key=i.count)
+        pairMode.append(mode)
+        pairMode.append( i.count(mode))
+        modes.append(pairMode)
+        media.append(sum(i) / float(len(i)))
+        median.append(statistics.median(i))
+    print("Modes: ", modes)
+    print("Medias: ", media) 
+    print("Median: ", median) 
 
 def Migration( poblations, porcentage, migrationProbability):
     luck = randint(1,100)
@@ -221,13 +240,21 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
         Migration( populations, pMigrationPoblation, pMigration)
         numGenerations = numGenerations - 1
         print( "Generacion numero restantes: ", numGenerations )
+    Stadistics(populations)
     populationInOne = []
     for i in populations:
         populationInOne.extend(i)
     solution = GetSolution( populationInOne, numSolutions)
     print("--- %s seconds ---" % (time.time() - startTime))
     #print(solution)
+    print("La solucion es: ",solution)
     return solution
+
+
+#Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
+
+
+
 
 #GeneticParallelAlgorithm(3, 200 , 30, 1, 10, 3, 5, 15 ,10)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
@@ -241,4 +268,3 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
 #print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
 #RemovePorcentagePoblation( [[1,2,-1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,-2],[9,5,11],[9,5,-10],[10,5,15]], 15 )
-#print (specialMarkersTuples())
