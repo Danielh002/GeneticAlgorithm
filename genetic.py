@@ -203,6 +203,7 @@ def Stadistics( poblations):
     for i in poblations:
         fitnessList.append(GetOnlyFitnessList(i))
     for i in fitnessList:
+        pairMode = []
         mode = max(set(i), key=i.count)
         pairMode.append(mode)
         pairMode.append( i.count(mode))
@@ -211,7 +212,7 @@ def Stadistics( poblations):
         median.append(statistics.median(i))
     print("Modes: ", modes)
     print("Medias: ", media) 
-    print("Median: ", median) 
+    print("Medians: ", median) 
 
 def Migration( poblations, porcentage, migrationProbability):
     luck = randint(1,100)
@@ -240,6 +241,8 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
         Migration( populations, pMigrationPoblation, pMigration)
         numGenerations = numGenerations - 1
         print( "Generacion numero restantes: ", numGenerations )
+    print("Prueba")
+    print(populations)
     Stadistics(populations)
     populationInOne = []
     for i in populations:
@@ -250,13 +253,19 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
     print("La solucion es: ",solution)
     return solution
 
+def testFitness():
+    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+    var = FitnessEvaluate( [[-76.54798115194384, 3.412758028867922]], dataList)
+    print(var)
+
+testFitness()
 
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 
 
 
 
-#GeneticParallelAlgorithm(3, 200 , 30, 1, 10, 3, 5, 15 ,10)
+#GeneticParallelAlgorithm(3, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,10)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   

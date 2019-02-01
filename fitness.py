@@ -45,8 +45,8 @@ NO_HEALTH_CENTER_NEAR_POINTS =  25
 ###############################################################################
 #FitnessValue for location vs Stations MIO in kilometers:
 #Distance Limits
-MIN_DISTANCE_STATION = 7
-MAX_DISTANCE_STATION = 3
+MIN_DISTANCE_STATION = 3
+MAX_DISTANCE_STATION = 7
 #Gain points
 GOOD_DISTANCE_STATION = 15
 AVERAGE_DISTANCE_STATION = 0
@@ -82,7 +82,7 @@ def haversineDistance(latitude1, longitude1, latitude2, longitude2):
     dlat = latitude2 - latitude1 
     a = math.sin(dlat/2)**2 + math.cos(latitude1) * math.cos(latitude2) * math.sin(dlon/2)**2
     c = 2 * math.asin(math.sqrt(a)) 
-    return c * EARTH_RADIO
+    return c * EARTH_RADIO  
 
 def ManhattanDistanceInMetricSystem( latitude1, longitude1, latitude2, longitude2):
     dlatitude1, dlongitude1, dlatitude2, dlongitude2 = map(math.radians, [latitude1, longitude1, latitude2, longitude2])
@@ -97,7 +97,7 @@ def ManhattanDistanceInMetricSystem( latitude1, longitude1, latitude2, longitude
     manhattanDistanceMetricSystem = math.fabs(latitudeDistance) + math.fabs(longitudeDistance)
     return manhattanDistanceMetricSystem
     
-def fitnessStationDistanceV2( location, dataStations ):  
+def fitnessStationDistance(location, dataStations ):  
     manhattanDistance = 0.0
     minManhattanDistance = math.inf
     points = 0
@@ -165,12 +165,12 @@ def fitnessPersonalInjueriesCali( location, dataPersonalInjueries):
 
 
 def FitnessValue ( individual, dataList ):
-    fitnessValueStation = fitnessStationDistanceV2(individual, dataList[STATION_ROUTE_POSITION])
+    fitnessValueStation = fitnessStationDistance(individual, dataList[STATION_ROUTE_POSITION])
     fitnessValueHospital = fitnessHospitalsDistance(individual, dataList[HOSPITALS_ROUTE_POSITION])
     fitnessValueFireFighthers = fitnessFirefigtherDistance(individual, dataList[FIREFIGTHER_ROUTE_POSITION])
     fitnessValueCarAccidentCali = fitnessCarAccidentCali(individual, dataList[CAR_ACCIDENT_ROUTE_POSITION])
     fitnessPersonalInjueriesCali = fitnessCarAccidentCali(individual, dataList[PERSONAL_INJURIES_ROUTE])
-    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali + fitnessPersonalInjueriesCali #fitnessValueSoundCaliDaily + fitnessValueSonudCaliNight
+    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali + fitnessPersonalInjueriesCali
     if( sumPoints < 0):
         sumPoints = 0
     elif( sumPoints > 100):
