@@ -248,24 +248,55 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
     for i in populations:
         populationInOne.extend(i)
     solution = GetSolution( populationInOne, numSolutions)
-    print("--- %s seconds ---" % (time.time() - startTime))
+    print("--- Tiempo ejercucion en segundos: %s  ---" % (time.time() - startTime))
     #print(solution)
     print("La solucion es: ",solution)
     return solution
+
+def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations, pMutation , tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions):
+    startTime = time.time()
+    populations = []
+    solution = None
+    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+    for i in range(0, numPopulation):
+        populations.append( FitnessEvaluate(Poblation(populationSize), dataList))
+    threads = []
+    while( numGenerations > 0 ):
+        for i in range(0, numPopulation):
+                threadPoblation = threading.Thread(name='Poblation#'+str(i+1) , target=GeneticProcess, args=( populations[i], pMutation, populationSize, tournamentSize, numSurvivos , dataList))
+                threads.append(threadPoblation)
+                threadPoblation.start()
+        for i in threads:
+            i.join()
+        Migration( populations, pMigrationPoblation, pMigration)
+        numGenerations = numGenerations - 1
+        print( "Generacion numero restantes: ", numGenerations )
+    print("Prueba")
+    print(populations)
+    Stadistics(populations)
+    populationInOne = []
+    for i in populations:
+        populationInOne.extend(i)
+    solution = GetSolution( populationInOne, numSolutions)
+    totalTime =  (time.time() - startTime)
+    print("La solucion es: ",solution)
+    return [solution[0][2], totalTime]
 
 def testFitness():
     dataList  = CreateDataList( fitness.FILE_LOCATIONS)
     var = FitnessEvaluate( [[-76.54798115194384, 3.412758028867922]], dataList)
     print(var)
 
-testFitness()
+#testFitness()
 
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 
 
 
 
-#GeneticParallelAlgorithm(3, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,10)
+GeneticParallelAlgorithm(5, 100000 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
+
+
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
