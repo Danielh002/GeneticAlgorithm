@@ -9,12 +9,12 @@ def GenerateNewInv():
     indv = []
     numPopulation = randint(1, 10)
     populationSize = randint(1, 10)
-    numGenerations = randint(1, 10)
-    pMutation = uniform(0, 0.01)
-    numSurvivos = randint(1, 10)
-    tournamentSize = randint(numSurvivos, 10)
-    pMigrationPoblation = uniform(0, 0.15)
-    pMigration = uniform(0, 0.05)
+    numGenerations = randint(10, 200)
+    pMutation = uniform(0.001, 0.05)
+    tournamentSize = randint(3, round(populationSize/2))
+    numSurvivos = randint(3, round(tournamentSize *0.1))
+    pMigrationPoblation = randint(1, 5)
+    pMigration = uniform(0.01, 0.5)
     indv = [ numPopulation, populationSize, numGenerations, pMutation, tournamentSize, numSurvivos, pMigrationPoblation, pMigration]
     return indv
 
@@ -30,6 +30,11 @@ def GeneratePoblation( sizePoblation , basePopulation = None ):
             basePopulation.append(GenerateNewInv())
             poblation = basePopulation
     return poblation
+
+def GenerateNewPoblation( poblation , fitnessList, newPoblation, sizePoblation ):
+    while ( len(newPoblation) < sizePoblation):
+        newPoblation.append( Selection(poblation, fitnessList))
+    return newPoblation
 
 def CrossOVer( mother, father):
     position = (randint(1, 7))
@@ -64,10 +69,7 @@ def Selection( poblation, fitnessList):
     inv1 = poblation[fitnessList.index(max(fitnessList))]
     del poblation[fitnessList.index(max(fitnessList))]
     del fitnessList[fitnessList.index(max(fitnessList))]
-    inv2 = poblation[fitnessList.index(max(fitnessList))]
-    del poblation[fitnessList.index(max(fitnessList))]
-    del fitnessList[fitnessList.index(max(fitnessList))]
-    return [inv1, inv2]
+    return inv1
 
 
 def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
@@ -75,11 +77,13 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     fitnessList = Evaluate( poblation )
     for i in range(0, numGenerations):
         newPoblation = []
-        chosenFathers = Selection( poblation, fitnessList)
-        son, daughter = CrossOVer( chosenFathers[0], chosenFathers[1])
-        son, daughter = Mutation( son, daughter, pMutation)
-        newPoblation.extend((son,daughter))
-        newPoblation = GeneratePoblation( sizePoblation, newPoblation)
+        for j in range(0, int(sizePoblation/2)):
+            father = Selection( poblation, fitnessList)
+            mother = Selection( poblation, fitnessList)
+            son, daughter = CrossOVer( father, mother)
+            son, daughter = Mutation( son, daughter, pMutation) 
+            newPoblation.extend((son,daughter))
+            newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)   
         poblation = newPoblation.copy()
         fitnessList = Evaluate(poblation )
     solution = poblation[fitnessList.index(max(fitnessList))]

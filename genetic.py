@@ -294,7 +294,7 @@ def testFitness():
 
 
 
-GeneticParallelAlgorithm(5, 100000 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
+#GeneticParallelAlgorithm(10, 1000 , 100 , 0.05, 10, 3, 0.5, 15 ,1)
 
 
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))

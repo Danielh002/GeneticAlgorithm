@@ -1,7 +1,3 @@
-import math
-import statistics
-a = []
-b = [1,2]
-c = [1,3]
-a.extend((b,c))
-print(a)
+import random, math
+pMutation = random.uniform(0.001, 0.05)
+print(pMutation, round(pMutation,3))
