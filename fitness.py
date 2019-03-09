@@ -133,7 +133,7 @@ def ManhattanDistanceInMetricSystem( latitude1, longitude1, latitude2, longitude
     
 def fitnessStationDistance(location, dataStations ):  
     manhattanDistance = 0.0
-    minManhattanDistance = math.inf
+    minManhattanDistance = 999999999
     points = 0
     for i in dataStations:
         manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
@@ -149,7 +149,7 @@ def fitnessStationDistance(location, dataStations ):
 
 def fitnessHospitalsDistance( location, dataHospitals):  
     manhattanDistance = 0.0
-    minManhattanDistance = math.inf
+    minManhattanDistance = 999999999
     points = 0
     for i in dataHospitals:
         manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
@@ -163,7 +163,7 @@ def fitnessHospitalsDistance( location, dataHospitals):
 
 def fitnessFirefigtherDistance( location, dataFireFigther):  
     manhattanDistance = 0.0
-    minManhattanDistance = math.inf
+    minManhattanDistance = 999999999
     points = 0
     for i in dataFireFigther:
         manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
@@ -227,7 +227,7 @@ def fitnessPoblationInjuriesCali( location, dataPersonalInjueries):
 
 def fitnessAvenuesDistance(location, dataStations ):  
     manhattanDistance = 0.0
-    minManhattanDistance = math.inf
+    minManhattanDistance = 999999999
     points = 0
     for i in dataStations:
         manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 

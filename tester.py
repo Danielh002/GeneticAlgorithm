@@ -73,10 +73,12 @@ def Selection( poblation, fitnessList):
 
 
 def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
+    print("Inician pruebas")
     startTime = time.time()
     poblation = GeneratePoblation(sizePoblation)
     fitnessList = Evaluate( poblation )
     for i in range(0, numGenerations):
+        print("Generacion #: ", i+1)
         newPoblation = []
         for j in range(0, int(sizePoblation/2)):
             father = Selection( poblation, fitnessList)
@@ -84,13 +86,15 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
             son, daughter = CrossOVer( father, mother)
             son, daughter = Mutation( son, daughter, pMutation) 
             newPoblation.extend((son,daughter))
-            newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)   
+            newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)
         poblation = newPoblation.copy()
-        fitnessList = Evaluate(poblation )
+        fitnessList = Evaluate(poblation)
+        print("Mejor individuo de la poblacion: ")
+        print(poblation[fitnessList.index(max(fitnessList))], max(fitnessList) )
         print(numGenerations-i, " Generaciones restantes" )
     solution = poblation[fitnessList.index(max(fitnessList))]
     print("--- Tiempo ejercucion tester: %s  ---" % (time.time() - startTime))
     return [solution, max(fitnessList)]
 
-print(GeneticSimpleAlgorithm( 100 , 20, 0.015))
+print(GeneticSimpleAlgorithm( 50 , 1, 0.015))
 #Evaluate( [[1,2],[3,4],[5,6]])
