@@ -1,4 +1,4 @@
-import genetic 
+import genetic,time
 from random import randint,choice,uniform
 
 #x = genetic.GeneticParallelAlgorithmTest(3, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
@@ -8,11 +8,11 @@ from random import randint,choice,uniform
 def GenerateNewInv():
     indv = []
     numPopulation = randint(1, 10)
-    populationSize = randint(1, 10)
-    numGenerations = randint(10, 200)
+    populationSize = randint(1, 100000)
+    numGenerations = randint(10, 1000)
     pMutation = uniform(0.001, 0.05)
-    tournamentSize = randint(3, round(populationSize/2))
-    numSurvivos = randint(3, round(tournamentSize *0.1))
+    tournamentSize = randint(1, populationSize)
+    numSurvivos = randint(1, round(populationSize/2))
     pMigrationPoblation = randint(1, 5)
     pMigration = uniform(0.01, 0.5)
     indv = [ numPopulation, populationSize, numGenerations, pMutation, tournamentSize, numSurvivos, pMigrationPoblation, pMigration]
@@ -73,6 +73,7 @@ def Selection( poblation, fitnessList):
 
 
 def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
+    startTime = time.time()
     poblation = GeneratePoblation(sizePoblation)
     fitnessList = Evaluate( poblation )
     for i in range(0, numGenerations):
@@ -86,8 +87,10 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
             newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)   
         poblation = newPoblation.copy()
         fitnessList = Evaluate(poblation )
+        print(numGenerations-i, " Generaciones restantes" )
     solution = poblation[fitnessList.index(max(fitnessList))]
+    print("--- Tiempo ejercucion tester: %s  ---" % (time.time() - startTime))
     return [solution, max(fitnessList)]
 
-GeneticSimpleAlgorithm( 20 , 5, 0.015)
+print(GeneticSimpleAlgorithm( 100 , 20, 0.015))
 #Evaluate( [[1,2],[3,4],[5,6]])

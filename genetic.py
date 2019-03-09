@@ -52,6 +52,12 @@ def Seed():
         #if( InsideCity( coordX, coordY)):
         return [coordY, coordX]
 
+def Selection( poblation, fitnessList):
+    inv1 = poblation[fitnessList.index(max(fitnessList))]
+    del poblation[fitnessList.index(max(fitnessList))]
+    del fitnessList[fitnessList.index(max(fitnessList))]
+    return inv1
+
 def Poblation( sizePoblation , basePopulation = None ):
     poblation = []
     if basePopulation == None:
@@ -60,7 +66,7 @@ def Poblation( sizePoblation , basePopulation = None ):
     else:
         for i in range(0, (sizePoblation - len(basePopulation))):
             basePopulation.append(Seed())
-            poblation = basePopulation
+        poblation = basePopulation
     return poblation
 
 def InsideCity(y,x, poly = PolyCali):
@@ -147,6 +153,7 @@ def FitnessEvaluate (poblation, dataList):
 
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos , dataList):
     parent = TournamentSelection( populationWithFitness, tournamentSize, numSurvivos )
+    #itnessList  = GetOnlyFitnessList(populationWithFitness) 
     children = []
     for i in range(0, int(len(parent)/2)):
         mother = parent.pop(0)
@@ -154,6 +161,10 @@ def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamen
         Son, Daugther = CrossOVer( mother, father)
         children.append(Mutation(Son, pMutation))
         children.append(Mutation(Daugther, pMutation))
+    #while ( len(children) <= populationSize/2):
+    #        indv = Selection(populationWithFitness, fitnessList)
+    #       del indv[-1]
+    #        children.append(indv)
     populationWithFitness = FitnessEvaluate(Poblation( populationSize, children), dataList)
 
 def GetOnlyFitnessList( evaluatePoblation):
@@ -287,14 +298,14 @@ def testFitness():
     var = FitnessEvaluate( [[-76.54798115194384, 3.412758028867922]], dataList)
     print(var)
 
-#testFitness()
+#estFitness()
 
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 
 
 
 
-#GeneticParallelAlgorithm(10, 1000 , 100 , 0.05, 10, 3, 0.5, 15 ,1)
+GeneticParallelAlgorithm(1, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
 
 
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
@@ -305,6 +316,6 @@ def testFitness():
 #print (TournamentSelection( [[1,2,-5],[3,2,-3],[4,5,-1],[6,7,-2],[8,9,-4],[9,8,-3]], 2 , 2))
 #print (Seed())
 #Mutation(1)
-#print (GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2))
+#GeneticProcess( [[1,2],[3,2],[4,5],[6,7],[8,9],[9,8]], 1, 6, 5, 2)
 #print (getOnlyFitnessList( [[1,2,4],[3,5,6],[7,8,9]]))
 #RemovePorcentagePoblation( [[1,2,-1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,-2],[9,5,11],[9,5,-10],[10,5,15]], 15 )

@@ -1,0 +1,28 @@
+--- 0.004981517791748047 seconds ---
+--- 0.004999637603759766 seconds ---
+Generacion numero restantes:  9
+--- 0.005002260208129883 seconds ---
+Generacion numero restantes:  8
+--- 0.005995988845825195 seconds ---
+Generacion numero restantes:  7
+--- 0.0050182342529296875 seconds ---
+Generacion numero restantes:  6
+--- 0.003998279571533203 seconds ---
+Generacion numero restantes:  5
+--- 0.00501561164855957 seconds ---
+Generacion numero restantes:  4
+--- 0.0049932003021240234 seconds ---
+Generacion numero restantes:  3
+--- 0.005017995834350586 seconds ---
+Generacion numero restantes:  2
+--- 0.0050122737884521484 seconds ---
+Generacion numero restantes:  1
+--- 0.004981040954589844 seconds ---
+Generacion numero restantes:  0
+Prueba
+[[[-76.55633039191059, 3.451493520097653, 28], [-76.5232795610192, 3.3349280580620926, 17], [-76.48929143887753, 3.3298956217851425, 12], [-76.49851771861843, 3.3665880408115485, 17], [-76.49466390781517, 3.4035560338690076, 25], [-76.52722495092976, 3.2997653676952643, 24], [-76.4703973787624, 3.292764559886764, 12], [-76.56305654355513, 3.4602266432543396, 0], [-76.55633039191059, 3.451493520097653, 28], [-76.55633039191059, 3.451493520097653, 28]]]
+Modes:  [[28, 3]]
+Medias:  [19.1]
+Medians:  [20.5]
+--- Tiempo ejercucion en segundos: 0.15297698974609375  ---
+La solucion es:  [[-76.55633039191059, 3.451493520097653, 28]]

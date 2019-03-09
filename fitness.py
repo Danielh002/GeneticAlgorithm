@@ -14,25 +14,23 @@ statiosRoute = os.path.join(pathfile,"Datos","Estaciones.xlsx")
 hospitalRoute = os.path.join(pathfile,"Datos","Hospitales.xlsx")
 fireFightersRoute = os.path.join(pathfile,"Datos","Bomberos.xlsx")
 cityInfoRoute = os.path.join(pathfile,"Datos","Comunas.xlsx")
-
-carAccidentsRoute = os.path.join(pathfile,"Datos","AccidentesTransitoCali.xlsx")
-personalInjuriesRoute = os.path.join(pathfile,"Datos","AccidentesTransitoCali.xlsx")
-
-
+avenuesRoute = os.path.join(pathfile,"Datos","Avenidas.xlsx")
 
 FILE_LOCATIONS = [
     statiosRoute,
     hospitalRoute,  
     fireFightersRoute,
     cityInfoRoute,
-    #carAccidentsRoute,
-    #personalInjuriesRoute,
+    avenuesRoute,
 ]
 
 STATION_ROUTE_POSITION = 0
 HOSPITALS_ROUTE_POSITION = 1
 FIREFIGTHER_ROUTE_POSITION = 2
 CIRY_INFO_ROUTE = 3
+AVENUES_ROUTE = 4
+
+
 
 
 #CAR_ACCIDENT_ROUTE_POSITION = 3
@@ -43,55 +41,60 @@ CIRY_INFO_ROUTE = 3
 #Distance Limits
 MIN_DISTANCE_HOSPITAL = 5
 #Points:
-HEALTH_CENTER_NEAR_POINTS =  - 25
-NO_HEALTH_CENTER_NEAR_POINTS =  25
+HEALTH_CENTER_NEAR_POINTS =  - 20
+NO_HEALTH_CENTER_NEAR_POINTS =  20
 ###############################################################################
 #FitnessValue for location vs Stations MIO in kilometers:
 #Distance Limits
 MIN_DISTANCE_STATION = 3
 MAX_DISTANCE_STATION = 7
 #Points:
-GOOD_DISTANCE_STATION = 15
+GOOD_DISTANCE_STATION = 3
 AVERAGE_DISTANCE_STATION = 0
-BAD_DISTANCE_STATION = -15
+BAD_DISTANCE_STATION = -3
 ###############################################################################
 #FitnessValue for location vs FireFighters in kilometers:
 #Distance Limits
 MIN_DISTANCE_FIREFIGTHER = 3
 MAX_DISTANCE_FIREFIGTHER = 7
 #Points
-GOOD_DISTANCE_FIREFIGTHER = 10
+GOOD_DISTANCE_FIREFIGTHER = 5
 AVERAGE_DISTANCE_FIREFIGTHER =  0
-BAD_DISTANCE_FIREFIGTHER = -10
+BAD_DISTANCE_FIREFIGTHER = -5
 ###############################################################################
 #CAR_INJURIES 
 CAR_ACCIDENTS_PERCENTILE30 = 90.8
 CAR_ACCIDENTS_PERCENTILE70 = 140.2
-CAR_ACCIDENTS_POINTS_GOOD = 10
-CAR_ACCIDENTS_POINTS_AVERAGE = 10
-CAR_ACCIDENTS_POINTS_BAD = 10
+CAR_ACCIDENTS_POINTS_GOOD = 20
+CAR_ACCIDENTS_POINTS_AVERAGE = 0
+CAR_ACCIDENTS_POINTS_BAD = -20
 ###############################################################################
 #PersonasInjueriesValor 
 PERSONAL_INJURIES_PERCENTILE30 = 236.2
 PERSONAL_INJURIES_PERCENTILE70 = 323.9
-PERSONAL_INJURIES_POINTS_GOOD = 10
-PERSONAL_INJURIES_POINTS_AVERAGE = 10
-PERSONAL_INJURIES_POINTS_BAD = 10
+PERSONAL_INJURIES_POINTS_GOOD = 20
+PERSONAL_INJURIES_POINTS_AVERAGE = 0
+PERSONAL_INJURIES_POINTS_BAD = -20
 ###############################################################################
 #Mortality 
 MORTALITY_PERCENTILE30 = 460.8
 MORTALITY_PERCENTILE70 = 639.1
-MORTALITY_INJURIES_POINTS_GOOD = 10
-MORTALITY_INJURIES_POINTS_AVERAGE = 10
-MORTALITY_INJURIES_POINTS_BAD = 10
+MORTALITY_INJURIES_POINTS_GOOD = 15
+MORTALITY_INJURIES_POINTS_AVERAGE = 0
+MORTALITY_INJURIES_POINTS_BAD = -15
 ###############################################################################
 #Poblation 
 POBLATION_PERCENTILE30 = 69749.7
 POBLATION_PERCENTILE70 = 110681.6
-POBLATION_NJURIES_POINTS_GOOD = 10
-POBLATION_INJURIES_POINTS_AVERAGE = 10
-POBLATION_INJURIES_POINTS_BAD = 10
-
+POBLATION_INJURIES_POINTS_GOOD = 7
+POBLATION_INJURIES_POINTS_AVERAGE = 0
+POBLATION_INJURIES_POINTS_BAD = -7
+################################################################################
+#Avenues
+MIN_AVENUES_DISTANCE = 1
+AVENUES_SPEED_POINTS_GOOD = 10
+AVENUES_SPEED_POINTS_AVERAGE = 0
+AVENUES_SPEED_POINTS_BAD = -10
 
 
 
@@ -210,7 +213,7 @@ def fitnessMortalityCali( location, dataPersonalInjueries):
                 points = MORTALITY_INJURIES_POINTS_GOOD
     return points
 
-def fitnessPoblationCali( location, dataPersonalInjueries):
+def fitnessPoblationInjuriesCali( location, dataPersonalInjueries):
     points = 0
     for i in dataPersonalInjueries:
         if( i[3] >= haversineDistance( location[0], location[1], i[1], i[2])):
@@ -219,17 +222,39 @@ def fitnessPoblationCali( location, dataPersonalInjueries):
             elif(i[7] > POBLATION_PERCENTILE30 and i[10] < POBLATION_PERCENTILE70 and POBLATION_INJURIES_POINTS_AVERAGE):
                 points = POBLATION_INJURIES_POINTS_AVERAGE
             else:
-                points = POBLATION_NJURIES_POINTS_GOOD
+                points = POBLATION_INJURIES_POINTS_GOOD
     return points
 
+def fitnessAvenuesDistance(location, dataStations ):  
+    manhattanDistance = 0.0
+    minManhattanDistance = math.inf
+    points = 0
+    for i in dataStations:
+        manhattanDistance = ManhattanDistanceInMetricSystem( location[0], location[1], i[1], i[2]) 
+        if( manhattanDistance < minManhattanDistance):
+            minManhattanDistance = manhattanDistance
+            break
+    if( minManhattanDistance < MIN_AVENUES_DISTANCE ):
+        if( i[3] < AVENUES_SPEED_POINTS_BAD ):
+            points = AVENUES_SPEED_POINTS_BAD
+        elif( i[3] >= AVENUES_SPEED_POINTS_BAD and i[3] < AVENUES_SPEED_POINTS_AVERAGE):
+            points = AVENUES_SPEED_POINTS_AVERAGE
+        elif( i[3] < AVENUES_SPEED_POINTS_BAD ):
+            points = AVENUES_SPEED_POINTS_BAD
+        else:
+            points = AVENUES_SPEED_POINTS_GOOD
+    return points
+    
 
 def FitnessValue ( individual, dataList ):
     fitnessValueStation = fitnessStationDistance(individual, dataList[STATION_ROUTE_POSITION])
     fitnessValueHospital = fitnessHospitalsDistance(individual, dataList[HOSPITALS_ROUTE_POSITION])
     fitnessValueFireFighthers = fitnessFirefigtherDistance(individual, dataList[FIREFIGTHER_ROUTE_POSITION])
     fitnessValueCarAccidentCali = fitnessCarAccidentCali(individual, dataList[CIRY_INFO_ROUTE])
-    fitnessPersonalInjueriesCali = fitnessCarAccidentCali(individual, dataList[CIRY_INFO_ROUTE])
-    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali + fitnessPersonalInjueriesCali
+    fitnessValuesPersonalInjueriesCali = fitnessPoblationInjuriesCali(individual, dataList[CIRY_INFO_ROUTE])
+    fitnessValuePoblationCali = fitnessMortalityCali(individual, dataList[CIRY_INFO_ROUTE])
+    fitnessValuesAvenuesDistance = fitnessAvenuesDistance(individual, dataList[AVENUES_ROUTE])
+    sumPoints = fitnessValueStation + fitnessValueHospital + fitnessValueFireFighthers + fitnessValueCarAccidentCali + fitnessValuesPersonalInjueriesCali + fitnessValuePoblationCali + fitnessValuesAvenuesDistance
     if( sumPoints < 0):
         sumPoints = 0
     elif( sumPoints > 100):
