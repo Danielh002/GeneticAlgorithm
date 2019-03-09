@@ -65,8 +65,8 @@ def Mutation( individual, individual2, mutationProbability ):
 def Evaluate( poblation ):
     fitnessList = []
     for i in  poblation:
-        fitnessList.append(1)
-        #fitnessList.append( genetic.GeneticParallelAlgorithmTest( i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], 1))
+        #fitnessList.append(1)
+        fitnessList.append( genetic.GeneticParallelAlgorithmTest( i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], 1))
     return fitnessList
 
 def Selection( poblation, fitnessList):
