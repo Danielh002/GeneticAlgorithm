@@ -112,7 +112,7 @@ def TournamentSelection( population , tournamentSize, numSurvivors):
     for i in range(0, numSurvivors):
         for i in range(0,tournamentSize):
             competitors.append(choice(population))
-        biggestValue = -math.inf
+        biggestValue = -99999999
         indv = None
         for i in competitors:            
             if (i[genomeSize] > biggestValue):
@@ -282,6 +282,7 @@ def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations,
         populationInOne.extend(i)
     solution = GetSolution( populationInOne, numSolutions)
     totalTime =  (time.time() - startTime)
+    
     return [solution[0][2], totalTime]
 
 def testFitness():
@@ -289,16 +290,9 @@ def testFitness():
     var = FitnessEvaluate( [[-76.54798115194384, 3.412758028867922]], dataList)
     print(var)
 
-#estFitness()
-
+#testFitness()
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
-
-
-
-
-GeneticParallelAlgorithm(1, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
-
-
+#GeneticParallelAlgorithm(1, 10 , 10 , 0.05, 10, 3, 0.5, 15 ,1)
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
