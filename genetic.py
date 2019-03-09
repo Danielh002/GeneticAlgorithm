@@ -277,16 +277,11 @@ def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations,
             i.join()
         Migration( populations, pMigrationPoblation, pMigration)
         numGenerations = numGenerations - 1
-        print( "Generacion numero restantes: ", numGenerations )
-    print("Prueba")
-    print(populations)
-    Stadistics(populations)
     populationInOne = []
     for i in populations:
         populationInOne.extend(i)
     solution = GetSolution( populationInOne, numSolutions)
     totalTime =  (time.time() - startTime)
-    print("La solucion es: ",solution)
     return [solution[0][2], totalTime]
 
 def testFitness():
