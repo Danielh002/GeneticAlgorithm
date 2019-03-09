@@ -148,7 +148,7 @@ def FitnessEvaluate (poblation, dataList):
     startTime = time.time()
     for individual in poblation:
          individual.append(fitness.FitnessValue(individual, dataList))
-    print("--- %s seconds ---" % (time.time() - startTime))
+    #print("--- %s seconds ---" % (time.time() - startTime))
     return poblation
 
 def GeneticProcess( populationWithFitness , pMutation, populationSize, tournamentSize, numSurvivos , dataList):
