@@ -8,13 +8,13 @@ from random import randint,choice,uniform
 def GenerateNewInv():
     indv = []
     numPopulation = randint(1, 5)
-    populationSize = randint(1, 1000)
+    populationSize = randint(10, 1000)
     numGenerations = randint(10, 100)
-    pMutation = uniform(0.001, 0.05)
+    pMutation = round(uniform(0.001, 0.05), 3)
     tournamentSize = randint(1, populationSize)
     numSurvivos = randint(1, round(populationSize/2))
     pMigrationPoblation = randint(1, 5)
-    pMigration = uniform(0.01, 0.5)
+    pMigration = round(uniform(0.01, 0.5),3)
     indv = [ numPopulation, populationSize, numGenerations, pMutation, tournamentSize, numSurvivos, pMigrationPoblation, pMigration]
     return indv
 
@@ -33,7 +33,10 @@ def GeneratePoblation( sizePoblation , basePopulation = None ):
 
 def GenerateNewPoblation( poblation , fitnessList, newPoblation, sizePoblation ):
     while ( len(newPoblation) < sizePoblation):
-        newPoblation.append( Selection(poblation, fitnessList))
+        if( len(newPoblation) < sizePoblation/2):
+            newPoblation.append( Selection(poblation, fitnessList))
+        else:
+            newPoblation.append(GenerateNewInv())
     return newPoblation
 
 def CrossOVer( mother, father):
@@ -62,7 +65,8 @@ def Mutation( individual, individual2, mutationProbability ):
 def Evaluate( poblation ):
     fitnessList = []
     for i in  poblation:
-        fitnessList.append( genetic.GeneticParallelAlgorithmTest( i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], 1))
+        fitnessList.append(1)
+        #fitnessList.append( genetic.GeneticParallelAlgorithmTest( i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], 1))
     return fitnessList
 
 def Selection( poblation, fitnessList):
@@ -79,25 +83,24 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     print("Poblaciones iniciales")
     for i in poblation:
         print("Poblacion: ", i)
-    fitnessList = Evaluate( poblation )
+    fitnessList = Evaluate( poblation)
     for i in range(0, numGenerations):
         print("Generacion #: ", i+1)
         newPoblation = []
-        for j in range(0, int(sizePoblation/2)):
+        for j in range(0, int(sizePoblation/4)):
             father = Selection( poblation, fitnessList)
             mother = Selection( poblation, fitnessList)
             son, daughter = CrossOVer( father, mother)
             son, daughter = Mutation( son, daughter, pMutation) 
             newPoblation.extend((son,daughter))
-            newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)
-        poblation = newPoblation.copy()
+        newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)
+        poblation = newPoblation.copy()  
         print("Poblaciones nuevasa")
         for i in poblation:
             print("Poblacion : ", i)
         fitnessList = Evaluate(poblation)
         print("Mejor individuo de la poblacion: ")
         print(poblation[fitnessList.index(max(fitnessList))], max(fitnessList) )
-        print(numGenerations-i, " Generaciones restantes" )
     solution = poblation[fitnessList.index(max(fitnessList))]
     print("--- Tiempo ejercucion tester: %s  ---" % (time.time() - startTime))
     return [solution, max(fitnessList)]
