@@ -7,9 +7,9 @@ from random import randint,choice,uniform
 #numPopulation, populationSize, numGenerations, pMutation , tournamentSize, numSurvivos, pMigrationPoblation, pMigration )
 def GenerateNewInv():
     indv = []
-    numPopulation = randint(1, 10)
-    populationSize = randint(1, 100000)
-    numGenerations = randint(10, 1000)
+    numPopulation = randint(1, 5)
+    populationSize = randint(1, 1000)
+    numGenerations = randint(10, 100)
     pMutation = uniform(0.001, 0.05)
     tournamentSize = randint(1, populationSize)
     numSurvivos = randint(1, round(populationSize/2))
@@ -76,6 +76,9 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     print("Inician pruebas")
     startTime = time.time()
     poblation = GeneratePoblation(sizePoblation)
+    print("Poblaciones iniciales")
+    for i in poblation:
+        print("Poblacion: ", i)
     fitnessList = Evaluate( poblation )
     for i in range(0, numGenerations):
         print("Generacion #: ", i+1)
@@ -88,6 +91,9 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
             newPoblation.extend((son,daughter))
             newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)
         poblation = newPoblation.copy()
+        print("Poblaciones nuevasa")
+        for i in poblation:
+            print("Poblacion : ", i)
         fitnessList = Evaluate(poblation)
         print("Mejor individuo de la poblacion: ")
         print(poblation[fitnessList.index(max(fitnessList))], max(fitnessList) )
@@ -96,5 +102,5 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     print("--- Tiempo ejercucion tester: %s  ---" % (time.time() - startTime))
     return [solution, max(fitnessList)]
 
-print(GeneticSimpleAlgorithm( 50 , 1, 0.015))
+print(GeneticSimpleAlgorithm( 50 , 20, 0.015))
 #Evaluate( [[1,2],[3,4],[5,6]])
