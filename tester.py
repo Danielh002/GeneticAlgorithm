@@ -75,7 +75,6 @@ def Selection( poblation, fitnessList):
     del fitnessList[fitnessList.index(max(fitnessList))]
     return inv1
 
-
 def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     print("Inician pruebas")
     startTime = time.time()
@@ -95,7 +94,7 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
             newPoblation.extend((son,daughter))
         newPoblation = GenerateNewPoblation( poblation, fitnessList, newPoblation, sizePoblation)
         poblation = newPoblation.copy()  
-        print("Poblaciones nuevasa")
+        print("Poblaciones nuevas")
         for i in poblation:
             print("Poblacion : ", i)
         fitnessList = Evaluate(poblation)
