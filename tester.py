@@ -104,5 +104,5 @@ def GeneticSimpleAlgorithm(  numGenerations, sizePoblation, pMutation):
     print("--- Tiempo ejercucion tester: %s  ---" % (time.time() - startTime))
     return [solution, max(fitnessList)]
 
-print(GeneticSimpleAlgorithm( 50 , 20, 0.015))
+print(GeneticSimpleAlgorithm( 20 , 10, 0.015))
 #Evaluate( [[1,2],[3,4],[5,6]])
