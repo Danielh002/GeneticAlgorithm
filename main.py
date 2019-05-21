@@ -45,6 +45,7 @@ def mapview():
     numSolutions = int(request.args.get('numSolutions'))
     specialMarkers = specialMarkersTuples()
     locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation,  tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
+    calculateLocations = locations.copy()
     for i in locations:
         i.insert(2,None)
     print(locations)
@@ -56,7 +57,7 @@ def mapview():
         markers=[(loc[1], loc[0], None, loc[2] ) for loc in locations],
         style= "width: 100%; height: 100%"
     )
-    session['result'] = json.dumps(locations)
+    session['result'] = json.dumps(calculateLocations)
     return render_template('templates/map.html', mymap=mymap)
 
 @app.route("/getCSV")

@@ -1,4 +1,3 @@
-C:\Users\DanielHernandezCuero\Documents\GeneticAlgorithm>python tester.py
 Inician pruebas
 Poblaciones iniciales
 Poblacion:  [3, 421, 44, 0.022, 56, 202, 2, 0.11]
