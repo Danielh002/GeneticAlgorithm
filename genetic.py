@@ -287,8 +287,11 @@ def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations,
 
 def testFitness():
     dataList  = CreateDataList( fitness.FILE_LOCATIONS)
-    var = FitnessEvaluate( [[-76.53793503237098, 3.357146048756302]], dataList)
+    var = FitnessEvaluate( [[-76.536425,3.350610]], dataList)
     print(var)
+
+
+
 
 testFitness()
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])

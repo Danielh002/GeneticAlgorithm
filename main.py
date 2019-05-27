@@ -87,7 +87,7 @@ def processCSV():
         pair = []
         pair.append(i[0])
         pair.append(i[1])
-        locations.append(pair)
+        locations.append(pair)  
     mymap = Map(
         identifier="view-side",
         lat=3.431355,
