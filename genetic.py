@@ -285,15 +285,37 @@ def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations,
     
     return [solution[0][2], totalTime]
 
-def testFitness():
-    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
-    var = FitnessEvaluate( [[-76.536425,3.350610]], dataList)
-    print(var)
+def main():
+    solucion = None
+    print("Ingrese parametros los siguientes parametros!!!")
+    print("Numero de islas: ")
+    numPopulation = int(input())
+    print("Tamaño de las islas: ")
+    populationSize = int(input())
+    print("Numero de generaciones: ")
+    numGenerations = int(input())
+    print("Probabilidad de mutacion: ")
+    pMutation = float(input())
+    print("Tamaño del torneo: ")
+    tournamentSize = int(input())
+    print("Numero de sobrevivientes: ")
+    numSurvivos = int(input())
+    print("Porcenta de las poblaciones que puede migrar: ")
+    pMigrationPoblation = float(input())
+    print("Probabilidad de migracion: ")
+    pMigration = float(input())
+    print("Cantidad de soluciones: ")
+    numSolutions = int(input())
+    solucion = GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation , tournamentSize, numSurvivos, pMigrationPoblation, pMigration, numSolutions)
+    print("Soluciones: ")
+    for i in solucion:
+        print(i)
 
 
+if __name__ == '__main__':
+    main()
 
-
-testFitness()
+#testFitness()
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 #print(GeneticParallelAlgorithm(1, 5 , 50 , 1 , 10, 3, 0.5, 15 ,1))
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
