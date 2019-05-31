@@ -49,8 +49,8 @@ def Seed():
     while True:
         coordX = uniform(3.2896921, 3.5033777)
         coordY = uniform(-76.592577, -76.451471)
-        #if( InsideCity( coordX, coordY)):
-        return [coordY, coordX]
+        if( InsideCity( coordX, coordY)):
+            return [coordY, coordX]
 
 def Selection( poblation, fitnessList):
     inv1 = poblation[fitnessList.index(max(fitnessList))]
@@ -311,11 +311,15 @@ def main():
     for i in solucion:
         print(i)
 
+def testFitness():
+    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+    var = FitnessEvaluate( [[-76.489881, 3.498092,]], dataList)
+    print(var)
 
-if __name__ == '__main__':
-    main()
+testFitness()
+#if __name__ == '__main__':
+#    main()
 
-#testFitness()
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 #print(GeneticParallelAlgorithm(1, 5 , 50 , 1 , 10, 3, 0.5, 15 ,1))
 #print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))

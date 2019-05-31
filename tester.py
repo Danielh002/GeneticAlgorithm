@@ -12,7 +12,7 @@ def GenerateNewInv():
     numGenerations = randint(10, 100)
     pMutation = round(uniform(0.001, 0.05), 3)
     tournamentSize = randint(1, populationSize)
-    numSurvivos = randint(1, round(populationSize/2))
+    numSurvivos = randint(1, round(tournamentSize/2))
     pMigrationPoblation = randint(1, 5)
     pMigration = round(uniform(0.01, 0.5),3)
     indv = [ numPopulation, populationSize, numGenerations, pMutation, tournamentSize, numSurvivos, pMigrationPoblation, pMigration]

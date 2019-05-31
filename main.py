@@ -24,6 +24,11 @@ hospitalicon = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
 stationIcon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
 fireFigtherIcon = 'http://maps.google.com/mapfiles/ms/micons/firedept.png'
 
+blueIcon = 'http://maps.google.com/mapfiles/ms/micons/blue-dot.png'
+greenIcon = 'http://maps.google.com/mapfiles/ms/micons/green-dot.png'
+redIcon = 'http://maps.google.com/mapfiles/ms/micons/red-dot.png'
+orangeIcon = 'http://maps.google.com/mapfiles/ms/micons/orange-dot.png'
+
 # you can also pass the key here if you preferx
 GoogleMaps(app)
 
@@ -48,7 +53,7 @@ def mapview():
     calculateLocations = locations.copy()
     for i in locations:
         i.insert(2,None)
-    print(locations)
+    #locations = BestMarkers(locations)
     locations.extend(specialMarkers)
     mymap = Map(
         identifier="view-side",
@@ -114,6 +119,17 @@ def specialMarkersTuples():
     stations.extend(hospital)
     stations.extend(fireFigther)
     return stations
+
+def BestMarkers( solutions ):
+    for i in solutions:
+        if i[3] < 70:
+            i[2] = greenIcon
+        elif i[3] >= 70 and i[3] < 75:
+            i[2] = blueIcon
+        else:
+            i[2] = orangeIcon
+    return solutions
+
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)
