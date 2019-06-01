@@ -6,11 +6,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    .navbar {
-    margin-bottom: 0px
-  }
-  </style> 
+  <script src="static/loading.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/stylesheet.cs"></script>
 </head>
 <body>
   <nav class="navbar navbar-inverse">
@@ -41,7 +38,8 @@
     </div>
   </nav>
 
-<div class="container">
+<img src="{{url_for('static', filename='loading.gif')}}" id="img" style="display:none">
+<div id="content" class="container">
   <h2> Parametros: </h2>
   <form class="form-horizontal" action="/map">
     <div class="form-group">
@@ -108,7 +106,7 @@
 
   <div class="form-group">        
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-success"> Iniciar </button>
+      <button id="iniciar" type="submit" class="btn btn-success"> Iniciar </button>
     </div>
   </div>
   </form>

@@ -282,7 +282,6 @@ def GeneticParallelAlgorithmTest( numPopulation, populationSize, numGenerations,
     solution = GetSolution( populationInOne, numSolutions)
     print("Coordenadas:  ", solution)
     totalTime =  (time.time() - startTime)
-    
     return [solution[0][2], totalTime]
 
 def main():
@@ -313,12 +312,12 @@ def main():
 
 def testFitness():
     dataList  = CreateDataList( fitness.FILE_LOCATIONS)
-    var = FitnessEvaluate( [[-76.489881, 3.498092,]], dataList)
+    var = FitnessEvaluate( [[-76.489881, 3.498092]], dataList)
     print(var)
 
-testFitness()
-#if __name__ == '__main__':
-#    main()
+#testFitness()
+if __name__ == '__main__':
+    main()
 
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
 #print(GeneticParallelAlgorithm(1, 5 , 50 , 1 , 10, 3, 0.5, 15 ,1))
