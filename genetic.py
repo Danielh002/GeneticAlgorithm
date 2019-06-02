@@ -310,18 +310,18 @@ def main():
     for i in solucion:
         print(i)
 
-def testFitness():
-    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
-    var = FitnessEvaluate( [[-76.489881, 3.498092]], dataList)
-    print(var)
+# def testFitness():
+#    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+#    var = FitnessEvaluate( [[-76.489881, 3.498092]], dataList)
+#    print(var)
 
 #testFitness()
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
 
 #Stadistics( [[[1,2,1],[3,4,1],[4,6,99]],[[3,3,1],[4,4,2],[5,5,3]]])
-#print(GeneticParallelAlgorithm(1, 5 , 50 , 1 , 10, 3, 0.5, 15 ,1))
-#print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))
+#print(GeneticParallelAlgorithm(1, 100 , 10 , 1 , 10, 3, 0.5, 15 ,10))
+#print(GetSolution( [[1,2,3],[1,3,4],[1,3,5]], 2))z|
 #Migration( [[[1,2,3],[1,3,4],[1,3,5]],[[2,2,7],[2,3,1],[2,3,9]],[[3,2,0],[3,3,20],[3,3,15]]], 33)
 #CopyPorcentagePoblation( [[1,2,1],[3,2,1],[4,5,1],[6,7,1],[8,9,2],[9,8,3],[4,8,2],[9,5,11],[9,5,10],[10,5,15]], 20 )   
 #print (TournamentSelection( [[[1,1],1.0], [[2,2],2.0], [[3,3],3.0],[[4,4],4.0]], 2 , 2))

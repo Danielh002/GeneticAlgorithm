@@ -17,17 +17,16 @@ app.config['GOOGLEMAPS_KEY'] = "AIzaSyDsanoV7fAVo1jfnBxj_wMYGXfUDUk9QBU"
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
+#icons http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons.htmlz
 
-#img = 'C:\\Users\\DanielHernandezCuero\\Documents\\GeneticAlgorithm\\Datos\\hospitalIcon.png'
-#img = 'https://drive.google.com/open?id=1YnOYbe7XhjV61C5-vdK_vpXGqmYG3Xra'
-hospitalicon = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png'
-stationIcon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
-fireFigtherIcon = 'http://maps.google.com/mapfiles/ms/micons/firedept.png'
 
-blueIcon = 'http://maps.google.com/mapfiles/ms/micons/blue-dot.png'
-greenIcon = 'http://maps.google.com/mapfiles/ms/micons/green-dot.png'
-redIcon = 'http://maps.google.com/mapfiles/ms/micons/red-dot.png'
-orangeIcon = 'http://maps.google.com/mapfiles/ms/micons/orange-dot.png'
+
+hospitalicon = 'http://127.0.0.1:5000/static/hospitalsIcon.png'
+stationIcon = 'http://127.0.0.1:5000/static/busIcon.png'
+fireFigtherIcon = 'http://127.0.0.1:5000/static/firefigtherIcon.png'
+blueIcon = 'http://127.0.0.1:5000/static/blueIcon.png'
+greenIcon = 'http://127.0.0.1:5000/static/greenIcon.png'
+orangeIcon = 'http://127.0.0.1:5000/static/orangeIcon.png'
 
 # you can also pass the key here if you preferx
 GoogleMaps(app)
@@ -48,21 +47,18 @@ def mapview():
     pMigrationPoblation = int(request.args.get('pMigrationPoblation'))
     pMigration = float(request.args.get('pMigration'))*100
     numSolutions = int(request.args.get('numSolutions'))
-    specialMarkers = specialMarkersTuples()
     locations = genetic.GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMutation,  tournamentSize, numSurvivors, pMigrationPoblation, pMigration, numSolutions)
-    calculateLocations = locations.copy()
-    for i in locations:
-        i.insert(2,None)
-    #locations = BestMarkers(locations)
-    locations.extend(specialMarkers)
+    session['result'] = json.dumps(locations)
+    marks = ColorMarks(locations)
+    marks.extend(specialMarkersTuples())
     mymap = Map(
         identifier="view-side",
         lat=3.431355,
         lng=-76.529650,
-        markers=[(loc[1], loc[0], None, loc[2] ) for loc in locations],
+        markers = marks,
         style= "width: 100%; height: 100%"
     )
-    session['result'] = json.dumps(calculateLocations)
+    
     return render_template('templates/map.html', mymap=mymap)
 
 @app.route("/getCSV")
@@ -90,45 +86,83 @@ def processCSV():
     csv_input = list(csv.reader(stream))
     for i in csv_input:
         pair = []
-        pair.append(i[0])
-        pair.append(i[1])
-        locations.append(pair)  
+        pair.append(float(i[0]))
+        pair.append(float(i[1]))
+        app.logger.info(i[0])
+        pair.append(float(i[2]))
+        
+        locations.append(pair)
+    
+    marks = ColorMarks(locations)
     mymap = Map(
         identifier="view-side",
         lat=3.431355,
         lng=-76.529650,
-        markers=[(loc[1], loc[0], None, None ) for loc in locations],
+        markers=marks,
         style= "width: 100%; height: 100%"
     )
     session['result'] = json.dumps(locations)
     return render_template('templates/map.html', mymap=mymap)
 
 def specialMarkersTuples():
+    markList = []
+    mark = {
+		"icon" : None,
+		"lat" : None,
+		"lng" : None,
+		"infobox" : None,
+	}
     stations = genetic.LoadAListWithData( genetic.fitness.statiosRoute)
     hospital = genetic.LoadAListWithData( genetic.fitness.hospitalRoute)
     fireFigther = genetic.LoadAListWithData( genetic.fitness.fireFightersRoute)
     for i in stations:
-        i.pop(0)
-        i.append(stationIcon)
+        mark["infobox"] = i[0]
+        mark["lat"] = i[2]
+        mark["lng"] = i[1]
+        mark["icon"] = stationIcon      
+        markList.append(mark.copy())  
     for i in hospital:
-        i.pop(0)
-        i.append(hospitalicon)
+        mark["infobox"] = i[0]
+        mark["lat"] = i[2]
+        mark["lng"] = i[1]
+        mark["icon"] = hospitalicon
+        markList.append(mark.copy())  
     for i in fireFigther:
-        i.pop(0)
-        i.append(fireFigtherIcon)
-    stations.extend(hospital)
-    stations.extend(fireFigther)
-    return stations
+        mark["infobox"] = i[0]
+        mark["lat"] = i[2]
+        mark["lng"] = i[1]
+        mark["icon"] = fireFigtherIcon
+        markList.append(mark.copy())        
+    return markList
 
-def BestMarkers( solutions ):
+def ColorMarks( solutions ):
+    markList = []
+    mark = {
+		"icon" : None,
+		"lat" : None,
+		"lng" : None,
+		"infobox" : None,
+	}
     for i in solutions:
-        if i[3] < 70:
-            i[2] = greenIcon
-        elif i[3] >= 70 and i[3] < 75:
-            i[2] = blueIcon
+        mark["lat"] = i[1]
+        mark["lng"] = i[0]
+        mark["infobox"] = "<b> Lat, Log: </b>" + str(round(i[1],5)) + ", " + str(round(i[0],5)) + "<br>" + "<b>" + "Aptitud: </b>" + str(i[2])
+        if i[2] < 70:
+            mark["icon"] = greenIcon
+        elif i[2] >= 70 and i[2] < 75:
+            mark["icon"] = blueIcon
         else:
-            i[2] = orangeIcon
-    return solutions
+            mark["icon"] = orangeIcon
+        markList.append(mark.copy())
+    return markList
+
+
+
+
+
+
+
+ 
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

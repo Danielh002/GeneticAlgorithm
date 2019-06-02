@@ -1,3 +1,3 @@
-import random, math
-pMutation = random.uniform(0.001, 0.05)
-print(pMutation, round(pMutation,3))
+var = '-777.44'
+var2= float(var)
+print(var)
