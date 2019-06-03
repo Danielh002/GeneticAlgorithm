@@ -88,11 +88,8 @@ def processCSV():
         pair = []
         pair.append(float(i[0]))
         pair.append(float(i[1]))
-        app.logger.info(i[0])
         pair.append(float(i[2]))
-        
         locations.append(pair)
-    
     marks = ColorMarks(locations)
     mymap = Map(
         identifier="view-side",
