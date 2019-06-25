@@ -7,6 +7,7 @@ $(document).ready(function() {
         $('#content').hide();
       });
       $('#opciones').click(function(){
+        $("#opciones").hide();
         $('div').show();
       });
     });
