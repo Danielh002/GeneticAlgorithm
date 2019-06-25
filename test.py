@@ -1,3 +1,2 @@
-var = '-777.44'
-var2= float(var)
-print(var)
+for i in range(0,10):
+    print(i)

@@ -58,7 +58,6 @@ def mapview():
         markers = marks,
         style= "width: 100%; height: 100%"
     )
-    
     return render_template('templates/map.html', mymap=mymap)
 
 @app.route("/getCSV")

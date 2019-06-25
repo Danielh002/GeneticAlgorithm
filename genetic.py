@@ -8,43 +8,58 @@ import statistics
 import os
 
 PolyCali = [
-        [-76.5647898,3.3697588],
-        [-76.5619907,3.3650495],
-        [-76.5370137,3.2942727],
-        [-76.5158135,3.2897311],
-        [-76.5133244,3.3390015],
-        [-76.5021665,3.3544243],
-        [-76.5083033,3.3682836],
-        [-76.5083462,3.3925533],
-        [-76.4824946,3.4126011],
-        [-76.4667706,3.4007754],
-        [-76.4541531,3.4417283],
-        [-76.4749668,3.4611769],
-        [-76.4810186,3.4980172],
-        [-76.4918332,3.503843],
-        [-76.5053944,3.4948476],
-        [-76.5218312,3.499388],
-        [-76.5362519,3.4922121],
-        [-76.5303728,3.4790078],
-        [-76.533699,3.4673937],
-        [-76.5383985,3.4573646],
-        [-76.5484621,3.4621515],
-        [-76.5591266,3.463597],
-        [-76.5867642,3.4635745],
-        [-76.5718292,3.4519978],
-        [-76.5531181,3.4477888],
-        [-76.5489554,3.4398103],
-        [-76.5672801,3.4148679],
-        [-76.5759274,3.410643],
-        [-76.5670223,3.3991354],
-        [-76.5616578,3.4087477],
-        [-76.5550916,3.4132192],
-        [-76.5562501,3.3905466],
-        [-76.5647898,3.3697588]
-    ]
+[-76.5678796,3.3688162],
+[-76.564463,3.3653049],
+[-76.5606173,3.3633358],
+[-76.5507248,3.326448],
+[-76.5356404,3.292559],
+[-76.5144402,3.2880174],
+[-76.4825112,3.315952],
+[-76.4712675,3.3484264],
+[-76.4705807,3.3745602],
+[-76.4664703,3.3993616],
+[-76.4675338,3.4030283],
+[-76.4655932,3.406438],
+[-76.4656602,3.4127433],
+[-76.4630048,3.4153724],
+[-76.4608697,3.4262853],
+[-76.4615775,3.4353452],
+[-76.4688945,3.4410857],
+[-76.4729607,3.4404646],
+[-76.4744519,3.4421567],
+[-76.4755999,3.4441433],
+[-76.4754175,3.4465154],
+[-76.4749776,3.4485448],
+[-76.4762973,3.4518166],
+[-76.4777993,3.4613051],
+[-76.4750527,3.4661886],
+[-76.4764636,3.4701672],
+[-76.4763725,3.4742742],
+[-76.4787652,3.4779477],
+[-76.4815656,3.4830669],
+[-76.4852244,3.4960465],
+[-76.4901596,3.4989701],
+[-76.4949231,3.501808],
+[-76.5040211,3.4931339],
+[-76.5204579,3.4976743],
+[-76.5392345,3.4905198],
+[-76.5289995,3.4772941],
+[-76.5323257,3.46568],
+[-76.5370252,3.4556509],
+[-76.5470887,3.4604378],
+[-76.5577532,3.4618833],
+[-76.5853908,3.4618608],
+[-76.5704558,3.4502841],
+[-76.5517447,3.4460751],
+[-76.547582,3.4380966],
+[-76.5659067,3.4131542],
+[-76.574554,3.4089293],
+[-76.5680092,3.400549],
+[-76.5602844,3.407034],
+[-76.5564648,3.4044798],
+[-76.5631164,3.3863053],
+[-76.5678796,3.3688162]]
 genomeSize = 2
-
-
 def Seed():
     while True:
         coordX = uniform(3.2896921, 3.5033777)
@@ -148,6 +163,7 @@ def FitnessEvaluate (poblation, dataList):
     startTime = time.time()
     for individual in poblation:
          individual.append(fitness.FitnessValue(individual, dataList))
+         #individual.append(1)
     #print("--- %s seconds ---" % (time.time() - startTime))
     return poblation
 
@@ -193,12 +209,13 @@ def CopyPorcentagePoblation( poblation, porcentage):
     return copyIndv
 
 def GetSolution( poblation, numSolutions):
+    copyPoblacion = poblation
     i = 0
-    simpleFitnessList = GetOnlyFitnessList( poblation) 
+    simpleFitnessList = GetOnlyFitnessList( copyPoblacion) 
     solution = []
     while ( i < numSolutions):
-        inv = poblation[simpleFitnessList.index(max(simpleFitnessList))]
-        del poblation[simpleFitnessList.index(max(simpleFitnessList))]
+        inv = copyPoblacion[simpleFitnessList.index(max(simpleFitnessList))]
+        del copyPoblacion[simpleFitnessList.index(max(simpleFitnessList))]
         del simpleFitnessList[simpleFitnessList.index(max(simpleFitnessList))]
         solution.append(inv)
         i+=1
@@ -221,9 +238,24 @@ def Stadistics( poblations):
         modes.append(pairMode)
         media.append(sum(i) / float(len(i)))
         median.append(statistics.median(i))
+        standarDesviation = round(statistics.pstdev(fitnessList),4)
     print("Modes: ", modes)
     print("Medias: ", media) 
     print("Medians: ", median) 
+
+def FinalStadistics( poblation):
+    mode = None
+    countMode = None
+    media = None
+    median = None
+    standarDesviation = None
+    fitnessList = GetOnlyFitnessList(poblation)
+    mode = max(set(fitnessList), key=fitnessList.count)
+    countMode = fitnessList.count(mode)
+    media = (sum(fitnessList) / float(len(fitnessList)))
+    median = (statistics.median(fitnessList))
+    standarDesviation = statistics.pstdev(fitnessList)
+    print( mode,",", countMode, ",", media, ",", median, ",", standarDesviation)
 
 def Migration( poblations, porcentage, migrationProbability):
     luck = randint(1,100)
@@ -251,7 +283,6 @@ def GeneticParallelAlgorithm( numPopulation, populationSize, numGenerations, pMu
             i.join()
         Migration( populations, pMigrationPoblation, pMigration)
         numGenerations = numGenerations - 1
-    Stadistics(populations)
     populationInOne = []
     for i in populations:
         populationInOne.extend(i)
@@ -310,12 +341,21 @@ def main():
     for i in solucion:
         print(i)
 
+def getStadistics():
+    parametros = [[5, 943, 100, 0.014, 566, 467, 3, 0.338,1], [5, 719, 94, 0.022, 681, 352, 4, 0.498,1], [4, 895, 35, 0.031, 767, 142, 1, 0.111,1],[4, 932, 89, 0.027, 234, 52, 4, 0.469,1]]
+    for j in parametros:
+        print("Configuracion: ", j)
+        for i in range(0,10):
+            print("Evaluacion: ", i+1)
+            test = GeneticParallelAlgorithm( *j)
+    return None
 
-print(GeneticParallelAlgorithm(5, 719, 2 , 0.022, 681 , 352 , 4 , 0.498, 1000))
-# def testFitness():
-#    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
-#    var = FitnessEvaluate( [[-76.489881, 3.498092]], dataList)
-#    print(var)
+#getStadistics()
+#print(GeneticParallelAlgorithm(2, 10, 2 , 0.022, 10 , 1 , 4 , 0.498, 5))
+def testFitness():
+    dataList  = CreateDataList( fitness.FILE_LOCATIONS)
+    var = FitnessEvaluate( [[-76.48788, 3.49188,]], dataList)
+    print(var)
 
 #testFitness()
 #if __name__ == '__main__':
