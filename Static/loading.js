@@ -5,6 +5,9 @@ $(document).ready(function() {
       $('#iniciar').click(function(){
         $('#img').show();
         $('#content').hide();
-      }); 
+      });
+      $('#opciones').click(function(){
+        $('div').show();
+      });
     });
   })

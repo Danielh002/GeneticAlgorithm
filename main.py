@@ -75,6 +75,11 @@ def getCSV():
 def uploadCSV():
     return render_template('templates/upload.html')
 
+
+@app.route("/advanced")
+def advanced():
+    return render_template('templates/advanced.html')
+
 @app.route("/processCSV", methods=["POST"])
 def processCSV():
     locations = []
